@@ -1,0 +1,41 @@
+﻿@model IEnumerable<CryptoNews.DAL.Entities.RssSource>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Url)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var source in Model) {
+        <tr>
+            <td>
+                @source.Name
+            </td>
+            <td>
+                @source.Url
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@source.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@source.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@source.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

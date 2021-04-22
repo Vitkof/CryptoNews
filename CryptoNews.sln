@@ -1,0 +1,68 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31025.194
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CryptoNews", "CryptoNews\CryptoNews.csproj", "{68419670-3194-4D9A-BFAA-E3EC73620179}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CryptoNews.DAL", "CryptoNews.DAL", "{6D5C469B-83C7-4B6D-B4D6-C44F57B40DF9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CryptoNews.DAL.Entities", "CryptoNews.DAL.Entities\CryptoNews.DAL.Entities.csproj", "{EC443B84-9999-49C7-B8E8-50C91B1803F4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{5D771617-F21F-4828-926D-3B0FA7D0B572}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CryptoNews.Core", "CryptoNews.Core", "{A4B5C042-9FF2-469D-9D8C-0FFC37394368}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CryptoNews.Services.Execution", "CryptoNews.Services.Execution\CryptoNews.Services.Execution.csproj", "{5A6CD94C-5E65-435D-8410-156EB201161D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CryptoNews.Core.DTO", "CryptoNews.Core.DTO\CryptoNews.Core.DTO.csproj", "{B00F5165-61AD-4289-A42B-8C4C9F8DF25A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CryptoNews.Core.IServices", "CryptoNews.Core.IServices\CryptoNews.Core.IServices.csproj", "{400295F5-549B-4418-A297-1C1C30F3C75A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryptoNews.DAL.Repositories", "CryptoNews.DAL.Repositories\CryptoNews.DAL.Repositories.csproj", "{7724353E-6B22-4ECC-900F-1A4D314950B8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{68419670-3194-4D9A-BFAA-E3EC73620179}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68419670-3194-4D9A-BFAA-E3EC73620179}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68419670-3194-4D9A-BFAA-E3EC73620179}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68419670-3194-4D9A-BFAA-E3EC73620179}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC443B84-9999-49C7-B8E8-50C91B1803F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC443B84-9999-49C7-B8E8-50C91B1803F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC443B84-9999-49C7-B8E8-50C91B1803F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC443B84-9999-49C7-B8E8-50C91B1803F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A6CD94C-5E65-435D-8410-156EB201161D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A6CD94C-5E65-435D-8410-156EB201161D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A6CD94C-5E65-435D-8410-156EB201161D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A6CD94C-5E65-435D-8410-156EB201161D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B00F5165-61AD-4289-A42B-8C4C9F8DF25A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B00F5165-61AD-4289-A42B-8C4C9F8DF25A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B00F5165-61AD-4289-A42B-8C4C9F8DF25A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B00F5165-61AD-4289-A42B-8C4C9F8DF25A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{400295F5-549B-4418-A297-1C1C30F3C75A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{400295F5-549B-4418-A297-1C1C30F3C75A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{400295F5-549B-4418-A297-1C1C30F3C75A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{400295F5-549B-4418-A297-1C1C30F3C75A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7724353E-6B22-4ECC-900F-1A4D314950B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7724353E-6B22-4ECC-900F-1A4D314950B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7724353E-6B22-4ECC-900F-1A4D314950B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7724353E-6B22-4ECC-900F-1A4D314950B8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EC443B84-9999-49C7-B8E8-50C91B1803F4} = {6D5C469B-83C7-4B6D-B4D6-C44F57B40DF9}
+		{5A6CD94C-5E65-435D-8410-156EB201161D} = {5D771617-F21F-4828-926D-3B0FA7D0B572}
+		{B00F5165-61AD-4289-A42B-8C4C9F8DF25A} = {A4B5C042-9FF2-469D-9D8C-0FFC37394368}
+		{400295F5-549B-4418-A297-1C1C30F3C75A} = {A4B5C042-9FF2-469D-9D8C-0FFC37394368}
+		{7724353E-6B22-4ECC-900F-1A4D314950B8} = {6D5C469B-83C7-4B6D-B4D6-C44F57B40DF9}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {322432D4-9FB3-4ED6-AF2E-6A8E44B9126B}
+	EndGlobalSection
+EndGlobal
