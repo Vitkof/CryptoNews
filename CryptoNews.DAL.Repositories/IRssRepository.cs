@@ -6,13 +6,8 @@ using System.Threading.Tasks;
 
 namespace CryptoNews.DAL.Repositories
 {
-    public interface IRssRepository
+    public interface IRssRepository : IRepository<RssSource>
     {
-        Task Add(RssSource rss);
-        Task AddRange(IEnumerable<RssSource> rssSources);
-        Task Delete(Guid id);
-        RssSource GetById(Guid id);
-        IQueryable<RssSource> GetAllRssSources();
-        Task Update(RssSource rss);
+        RssSource ReadByName(string name);
     }
 }
