@@ -1,5 +1,7 @@
-﻿using CryptoNews.DAL.Entities;
+﻿using CryptoNews.Core.DTO;
+using CryptoNews.DAL.Entities;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,6 +22,12 @@ namespace CryptoNews.DAL.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task AddRange(IEnumerable<RssSource> rssSources)
+        {
+            await _context.RssSources.AddRangeAsync(rssSources);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task Delete(Guid id)
         {
             RssSource rss = GetById(id);
@@ -32,11 +40,9 @@ namespace CryptoNews.DAL.Repositories
             return _context.RssSources.Find(id);
         }
 
-        public IQueryable<RssSource> GetRssSources()
+        public IQueryable<RssSource> GetAllRssSources()
         {
-            var l = _context.RssSources.Where(rss => !String.IsNullOrWhiteSpace(rss.Name));
-
-            return l;
+            return _context.RssSources.Where(rss => !String.IsNullOrWhiteSpace(rss.Name));
         }
 
         public async Task Update(RssSource rss)
@@ -44,5 +50,7 @@ namespace CryptoNews.DAL.Repositories
             _context.RssSources.Update(rss);  //проверка на существование записи
             await _context.SaveChangesAsync(); //обработка ошибок
         }
+
+        
     }
 }

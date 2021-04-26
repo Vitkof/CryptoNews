@@ -14,23 +14,23 @@ namespace CryptoNews.Controllers
 {
     public class NewsController : Controller
     {
-        private readonly INewService _newService;
+        private readonly INewsService _newsService;
 
-        public NewsController(INewService newService)
+        public NewsController(INewsService newsService)
         {
-            _newService = newService;
+            _newsService = newsService;
         }
 
         // GET: News
         public async Task<IActionResult> Index(Guid? sourceId)
         {
-            List<NewDto> model;
+            List<NewsDto> model;
             if (sourceId == null)
             {
                 return NotFound();
             }
 
-            model = (await _newService.GetNewBySourceId(sourceId)).ToList();
+            model = (await _newsService.GetNewsBySourceId(sourceId)).ToList();
             
             
             return View(model);
@@ -44,32 +44,32 @@ namespace CryptoNews.Controllers
                 return NotFound();
             }
 
-            var @new = await _newService.GetNewWithRssSourceNameById(id.Value);
+            var @news = await _newsService.GetNewsWithRssSourceNameById(id.Value);
 
-            if (@new == null)
+            if (@news == null)
             {
                 return NotFound();
             }
-            var viewModel = new NewWithRssSourceNameDto()
+            var viewModel = new NewsWithRssSourceNameDto()
             {
-                Id = @new.Id,
-                Title = @new.Title,
-                Description = @new.Description,
-                Body = @new.Body,
-                PubDate = @new.PubDate,
-                Rating = @new.Rating,
-                Url = @new.Url,
-                RssSourceId = @new.RssSourceId,
-                RssSourceName = @new.RssSourceName
+                Id = @news.Id,
+                Title = @news.Title,
+                Description = @news.Description,
+                Body = @news.Body,
+                PubDate = @news.PubDate,
+                Rating = @news.Rating,
+                Url = @news.Url,
+                RssSourceId = @news.RssSourceId,
+                RssSourceName = @news.RssSourceName
 
             };
-            return View(@new);
+            return View(@news);
         }
 
         // GET: News/Create
         public IActionResult Create()
         {
-            ViewData["RssSourceId"] = new SelectList(_context.RssSources, "Id", "Id");
+            ViewData["RssSourceId"] = new SelectList(_newsService.GetAll, "Id", "Id");
             return View();
         }
 
@@ -78,17 +78,16 @@ namespace CryptoNews.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,Body,PubDate,Rating,Url,RssSourceId")] New @new)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,Body,PubDate,Rating,Url,RssSourceId")] NewsDto @news)
         {
             if (ModelState.IsValid)
             {
-                @new.Id = Guid.NewGuid();
-                _context.Add(@new);
-                await _context.SaveChangesAsync();
+                @news.Id = Guid.NewGuid();
+                await _newsService.AddNews(@news);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RssSourceId"] = new SelectList(_context.RssSources, "Id", "Id", @new.RssSourceId);
-            return View(@new);
+            ViewData["RssSourceId"] = new SelectList(_context.RssSources, "Id", "Id", @news.RssSourceId);
+            return View(@news);
         }
 
         // GET: News/Edit/5
@@ -113,7 +112,7 @@ namespace CryptoNews.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,Body,PubDate,Rating,Url,RssSourceId")] New @new)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,Body,PubDate,Rating,Url,RssSourceId")] News @new)
         {
             if (id != @new.Id)
             {

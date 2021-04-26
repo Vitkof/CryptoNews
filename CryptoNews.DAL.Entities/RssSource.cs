@@ -11,6 +11,6 @@ namespace CryptoNews.DAL.Entities
         [Url]
         public string Url { get; set; }
 
-        public virtual ICollection<New> NewsCollection { get; set; }
+        public virtual ICollection<News> NewsCollection { get; set; }
     }
 }

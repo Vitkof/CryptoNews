@@ -14,8 +14,8 @@ namespace CryptoNews.DAL.Entities
         public DateTime CreateAt { get; set; }
         public bool Active { get; set; }
 
-        public Guid NewId { get; set; }
-        public virtual New New { get; set; }
+        public Guid NewsId { get; set; }
+        public virtual News News { get; set; }
 
         public Guid UserId { get; set; }
         public virtual User User { get; set; }

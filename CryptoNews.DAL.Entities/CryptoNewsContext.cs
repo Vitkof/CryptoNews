@@ -9,7 +9,7 @@ namespace CryptoNews.DAL.Entities
     public class CryptoNewsContext : DbContext
     {
         public DbSet<Comment> Comments { get; set; }
-        public DbSet<New> News { get; set; }
+        public DbSet<News> News { get; set; }
         public DbSet<RssSource> RssSources { get; set; }
         public DbSet<User> Users { get; set; }
 

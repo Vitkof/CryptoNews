@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace CryptoNews.Core.DTO
 {
-    public class NewDto
+    public class NewsWithRssSourceNameDto
     {
         public Guid Id { get; set; }
         [StringLength(150, MinimumLength = 3), Required]
@@ -20,5 +24,6 @@ namespace CryptoNews.Core.DTO
         public string Url { get; set; }
 
         public Guid RssSourceId { get; set; }
+        public string RssSourceName { get; set; }
     }
 }
