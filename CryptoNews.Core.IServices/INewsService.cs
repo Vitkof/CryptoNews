@@ -16,6 +16,6 @@ namespace CryptoNews.Core.IServices
         Task AddRangeNews(IEnumerable<NewsDto> newsDto);
         Task<int> EditNews(NewsDto news);
         Task<int> DeleteNews(NewsDto news);
-
+        bool Exist(Guid id);
     }
 }

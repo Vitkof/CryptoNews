@@ -6,23 +6,26 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CryptoNews.DAL.Entities;
-using CryptoNews.Models.ViewModels;
 using CryptoNews.Core.IServices;
 using CryptoNews.Core.DTO;
+using CryptoNews.Models;
+using CryptoNews.Models.ViewModels;
 
 namespace CryptoNews.Controllers
 {
     public class NewsController : Controller
     {
         private readonly INewsService _newsService;
+        private readonly IRssSourceService _rssService;
 
-        public NewsController(INewsService newsService)
+        public NewsController(INewsService newsService, IRssSourceService rssSource)
         {
             _newsService = newsService;
+            _rssService = rssSource;
         }
 
-        // GET: News
-        public async Task<IActionResult> Index(Guid? sourceId)
+        // GET: News/
+        public async Task<IActionResult> Index(Guid? sourceId, int pageNumber=1)
         {
             List<NewsDto> model;
             if (sourceId == null)
@@ -31,9 +34,22 @@ namespace CryptoNews.Controllers
             }
 
             model = (await _newsService.GetNewsBySourceId(sourceId)).ToList();
-            
-            
-            return View(model);
+            var itemsOnPage = 20;
+            var newsPerPages = model.Skip((pageNumber - 1) * itemsOnPage).Take(itemsOnPage);
+            PageInfo info = new PageInfo()
+            {
+                PageNumber = pageNumber,
+                ItemsOnPage = itemsOnPage,
+                CountItems = model.Count
+            };
+
+            var result = new NewsListWithPaginator()
+            {
+                NewsPerPages = newsPerPages,
+                PageInfo = info
+            };
+
+            return View(result);
         }
 
         // GET: News/Details/5
@@ -67,9 +83,9 @@ namespace CryptoNews.Controllers
         }
 
         // GET: News/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["RssSourceId"] = new SelectList(_newsService.GetAll, "Id", "Id");
+            ViewData["RssSourceId"] = new SelectList(await _rssService.GetAllRssSources(), "Id", "Name");
             return View();
         }
 
@@ -86,7 +102,7 @@ namespace CryptoNews.Controllers
                 await _newsService.AddNews(@news);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RssSourceId"] = new SelectList(_context.RssSources, "Id", "Id", @news.RssSourceId);
+            ViewData["RssSourceId"] = new SelectList(await _rssService.GetAllRssSources(), "Id", "Id", @news.RssSourceId);
             return View(@news);
         }
 
@@ -98,13 +114,13 @@ namespace CryptoNews.Controllers
                 return NotFound();
             }
 
-            var @new = await _context.News.FindAsync(id);
-            if (@new == null)
+            var @news = _newsService.GetNewsById(id.Value); 
+            if (@news == null)
             {
                 return NotFound();
             }
-            ViewData["RssSourceId"] = new SelectList(_context.RssSources, "Id", "Id", @new.RssSourceId);
-            return View(@new);
+            ViewData["RssSourceId"] = new SelectList(await _rssService.GetAllRssSources(), "Id", "Id", @news.RssSourceId);
+            return View(@news);
         }
 
         // POST: News/Edit/5
@@ -112,9 +128,9 @@ namespace CryptoNews.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,Body,PubDate,Rating,Url,RssSourceId")] News @new)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,Body,PubDate,Rating,Url,RssSourceId")] NewsDto @news)
         {
-            if (id != @new.Id)
+            if (id != @news.Id)
             {
                 return NotFound();
             }
@@ -123,12 +139,11 @@ namespace CryptoNews.Controllers
             {
                 try
                 {
-                    _context.Update(@new);
-                    await _context.SaveChangesAsync();
+                    await _newsService.EditNews(@news);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!NewExists(@new.Id))
+                    if (!NewsExists(@news.Id))
                     {
                         return NotFound();
                     }
@@ -139,8 +154,8 @@ namespace CryptoNews.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RssSourceId"] = new SelectList(_context.RssSources, "Id", "Id", @new.RssSourceId);
-            return View(@new);
+            ViewData["RssSourceId"] = new SelectList(await _rssService.GetAllRssSources(), "Id", "Id", @news.RssSourceId);
+            return View(@news);
         }
 
         // GET: News/Delete/5
@@ -151,14 +166,14 @@ namespace CryptoNews.Controllers
                 return NotFound();
             }
 
-            var @new = await _context.News
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (@new == null)
+            var @news =  _newsService.GetNewsById(id.Value);
+
+            if (@news == null)
             {
                 return NotFound();
             }
 
-            return View(@new);
+            return View(@news);
         }
 
         // POST: News/Delete/5
@@ -166,15 +181,14 @@ namespace CryptoNews.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var @new = await _context.News.FindAsync(id);
-            _context.News.Remove(@new);
-            await _context.SaveChangesAsync();
+            var @news = _newsService.GetNewsById(id);//_context.News.FindAsync(id);
+            await _newsService.DeleteNews(@news);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool NewExists(Guid id)
+        private bool NewsExists(Guid id)
         {
-            return _context.News.Any(e => e.Id == id);
+            return _newsService.Exist(id);
         }
     }
 }

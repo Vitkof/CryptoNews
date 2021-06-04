@@ -1,4 +1,5 @@
-﻿@model IEnumerable<CryptoNews.Core.DTO.NewsDto>
+﻿@using CryptoNews.HtmlHelpers
+@model CryptoNews.Models.ViewModels.NewsListWithPaginator
 
 @{
     ViewData["Title"] = "Index";
@@ -13,31 +14,31 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                @Html.DisplayColumnNameFor(Model.NewsPerPages, m => m.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @Html.DisplayColumnNameFor(Model.NewsPerPages, m => m.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Body)
+                @Html.DisplayColumnNameFor(Model.NewsPerPages, m => m.Body)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PubDate)
+                @Html.DisplayColumnNameFor(Model.NewsPerPages, m => m.PubDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Rating)
+                @Html.DisplayColumnNameFor(Model.NewsPerPages, m => m.Rating)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Url)
+                @Html.DisplayColumnNameFor(Model.NewsPerPages, m => m.Url)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RssSource)
+                @Html.DisplayColumnNameFor(Model.NewsPerPages, m => m.RssSourceId)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.NewsPerPages) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
@@ -58,7 +59,7 @@
                 @Html.DisplayFor(modelItem => item.Url)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.RssSource.Id)
+                @Html.DisplayFor(modelItem => item.RssSourceId)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -67,5 +68,13 @@
             </td>
         </tr>
 }
+
     </tbody>
 </table>
+
+<div class="btn-group">
+    @Html.CreatePaginator(Model.PageInfo, i => Url.Action("Index", new { 
+    sourceId = Model.NewsPerPages.FirstOrDefault().RssSourceId, 
+    pageNumber = i 
+}))
+</div>
