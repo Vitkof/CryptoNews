@@ -14,8 +14,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CryptoNews.DAL.Entities;
-
-
+using CryptoNews.DAL.IRepositories;
+using CryptoNews.DAL.Repositories;
+using CryptoNews.Core.IServices;
+using CryptoNews.Services.Implement;
 
 namespace CryptoNews
 {
@@ -31,9 +33,11 @@ namespace CryptoNews
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllersWithViews();
+            services.AddSession();
+
             string connect = Configuration.GetConnectionString("MyConnect");
             /*ServerVersion version = ServerVersion.AutoDetect(connect);*/
-
             services.AddDbContextPool<CryptoNewsContext>(opt => opt
                 .UseSqlServer(connect).UseLoggerFactory(LoggerFactory.Create(b => b
                 .AddConsole()
@@ -41,7 +45,19 @@ namespace CryptoNews
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors()
                     );
-            services.AddControllersWithViews();
+
+            services.AddTransient<IRepository<News>, NewsRepository>();
+            services.AddTransient<IRepository<RssSource>, RssRepository>();
+            services.AddTransient<IRepository<User>, UserRepository>();
+            services.AddTransient<IRepository<Role>, RoleRepository>();
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<INewsService, NewsService>();
+            services.AddScoped<IRssSourceService, RssSourceService>();
+
+            
+            
+            services.AddMemoryCache();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

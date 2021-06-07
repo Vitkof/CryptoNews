@@ -5,18 +5,19 @@ using System.Threading.Tasks;
 using CryptoNews.Core.DTO;
 using CryptoNews.Core.IServices;
 using CryptoNews.DAL.Entities;
+using CryptoNews.DAL.IRepositories;
 using CryptoNews.DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace CryptoNews.Services.Execution
+namespace CryptoNews.Services.Implement
 {
     public class NewsService : INewsService
     {
-        private readonly INewsRepository _repos;
+        private readonly IUnitOfWork _unit;
 
-        public NewsService(INewsRepository repos)
+        public NewsService(IUnitOfWork unitOfWork)
         {
-            _repos = repos;
+            _unit = unitOfWork;
         }
 
         public async Task AddNews(NewsDto nd)
@@ -32,8 +33,8 @@ namespace CryptoNews.Services.Execution
                 Url = nd.Url,
                 RssSourceId = nd.RssSourceId
             };
-            
-            await _repos.Add(news);
+
+            await _unit.News.Create(news);
         }
 
         public async Task AddRangeNews(IEnumerable<NewsDto> newsDto)
@@ -49,19 +50,37 @@ namespace CryptoNews.Services.Execution
                 Url = nd.Url,
                 RssSourceId = nd.RssSourceId
             }).ToList();
-            
-            await _repos.AddRange(range);
 
+            await _unit.News.CreateRange(range);
+            await _unit.SaveChangesAsync();
         }
 
-        public Task<int> DeleteNews(NewsDto news)
+        public async Task<int> DeleteNews(NewsDto nd)
+        {
+            var news = new News()
+            {
+                Id = nd.Id,
+                Title = nd.Title,
+                Description = nd.Description,
+                Body = nd.Body,
+                PubDate = nd.PubDate,
+                Rating = nd.Rating,
+                Url = nd.Url,
+                RssSourceId = nd.RssSourceId
+            };
+
+            await _unit.News.Delete(news.Id); 
+            return 1;
+        }
+
+        public async Task<int> EditNews(NewsDto news)
         {
             throw new NotImplementedException();
         }
 
-        public Task<int> EditNews(NewsDto news)
+        public bool Exist(Guid id)
         {
-            throw new NotImplementedException();
+            return _unit.News.ReadAll().Any(e => e.Id == id);
         }
 
         public Task<IEnumerable<NewsDto>> FindNews()
@@ -71,7 +90,7 @@ namespace CryptoNews.Services.Execution
 
         public NewsDto GetNewsById(Guid id)
         {
-            var n = _repos.GetById(id);
+            var n = _unit.News.ReadById(id);
             return new NewsDto()
             {
                 Id = n.Id,
@@ -88,11 +107,10 @@ namespace CryptoNews.Services.Execution
         public async Task<IEnumerable<NewsDto>> GetNewsBySourceId(Guid? id)
         {
             var news = id.HasValue
-                ? await _repos.GetAllNews()
-                .Where(n => n.RssSourceId == id).ToListAsync()
-                : await _repos.GetAllNews().ToListAsync();
+                ? await _unit.News.ReadMany(n => n.RssSourceId == id).ToListAsync()
+                : await _unit.News.ReadMany(n => n != null).ToListAsync();
 
-            var newsDto = news.Select(n => new NewsDto()
+            var newsDtos = news.Select(n => new NewsDto()
             {
                 Id = n.Id,
                 Title = n.Title,
@@ -103,12 +121,24 @@ namespace CryptoNews.Services.Execution
                 Url = n.Url,
                 RssSourceId = n.RssSourceId
             }).ToArray();
-            return newsDto;
+            return newsDtos;
         }
 
-        public async Task<NewsWithRssSourceNameDto> GetNewsWithRssSourceNameById(Guid id)
+        public NewsWithRssSourceNameDto GetNewsWithRssSourceNameById(Guid id)
         {
-            throw new NotImplementedException();
+            var res = _unit.News.ReadMany(n => n.Id == id,
+                                        n => n.RssSource)
+                .Select(n => new NewsWithRssSourceNameDto()
+                {
+                    Id = n.Id,
+                    Title = n.Title,
+                    Description = n.Description,
+                    Body = n.Body,
+                    PubDate = n.PubDate,
+                    Rating = n.Rating,
+                    RssSourceId = n.RssSourceId
+                });
+            return (NewsWithRssSourceNameDto)res;
         }
     }
 }

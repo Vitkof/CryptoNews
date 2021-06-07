@@ -39,6 +39,19 @@ namespace CryptoNews.DAL.Repositories
         
         }
 
+        private bool disposed = false;
+        public virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    _cont.Dispose();
+                }
+                this.disposed = true;
+            }
+        }
+
         public void Dispose()
         {
             _cont?.Dispose();

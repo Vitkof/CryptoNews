@@ -60,7 +60,7 @@ namespace CryptoNews.Controllers
                 return NotFound();
             }
 
-            var @news = await _newsService.GetNewsWithRssSourceNameById(id.Value);
+            var @news = _newsService.GetNewsWithRssSourceNameById(id.Value);
 
             if (@news == null)
             {

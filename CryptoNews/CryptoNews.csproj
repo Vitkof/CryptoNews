@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CryptoNews.Core.IServices\CryptoNews.Core.IServices.csproj" />
     <ProjectReference Include="..\CryptoNews.DAL.Entities\CryptoNews.DAL.Entities.csproj" />
+    <ProjectReference Include="..\CryptoNews.Services.Execution\CryptoNews.Services.Implement.csproj" />
   </ItemGroup>
 
 </Project>

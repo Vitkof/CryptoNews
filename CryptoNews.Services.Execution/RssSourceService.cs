@@ -7,16 +7,18 @@ using System.Text;
 using System.Threading.Tasks;
 using CryptoNews.DAL.Repositories;
 using CryptoNews.DAL.Entities;
+using CryptoNews.DAL.IRepositories;
+using Microsoft.EntityFrameworkCore;
 
-namespace CryptoNews.Services.Execution
+namespace CryptoNews.Services.Implement
 {
     public class RssSourceService : IRssSourceService
     {
-        private readonly IRssRepository _repos;
+        private readonly IUnitOfWork _unit;
 
-        public RssSourceService(IRssRepository repos)
+        public RssSourceService(IUnitOfWork unitOfWork)
         {
-            _repos = repos;
+            _unit = unitOfWork;
         }
 
         
@@ -29,7 +31,7 @@ namespace CryptoNews.Services.Execution
                 Name = rd.Name,
                 Url = rd.Url
             };
-            await _repos.Add(rss);
+            await _unit.RssSources.Create(rss);
         }
 
         public async Task AddRangeRssSources(IEnumerable<RssSourceDto> rssDto)
@@ -40,17 +42,45 @@ namespace CryptoNews.Services.Execution
                 Name = rd.Name,
                 Url = rd.Url
             }).ToList();
-            await _repos.AddRange(range);
+            await _unit.RssSources.CreateRange(range);
         }
 
-        public Task<int> DeleteRssSource(RssSourceDto rss)
+        public async Task<int> DeleteRssSource(RssSourceDto rd)
         {
-            throw new NotImplementedException();
+            return await Task.Run(async () =>
+            {
+                await _unit.RssSources.Delete(rd.Id);
+                return await _unit.SaveChangesAsync();
+            });
         }
 
-        public Task<int> EditRssSource(RssSourceDto rss)
+        public async Task<int> EditRssSource(RssSourceDto rd)
         {
-            throw new NotImplementedException();
+            return await Task.Run(async () =>
+            {
+                var rss = new RssSource()
+                {
+                    Id = rd.Id,
+                    Name = rd.Name,
+                    Url = rd.Url
+                };
+                await _unit.RssSources.Update(rss);
+                return await _unit.SaveChangesAsync();
+            });
+        }
+
+        public async Task<IEnumerable<RssSourceDto>> GetAllRssSources()
+        {
+            var rssDtos =  await _unit.RssSources.ReadMany(r 
+                => !string.IsNullOrEmpty(r.Name))
+                .Select(r => new RssSourceDto()
+            {
+                Id = r.Id,
+                Name = r.Name,
+                Url = r.Url
+            }).ToListAsync();
+
+            return rssDtos;
         }
 
         public Task<NewsWithRssSourceNameDto> GetNewsWithRssSourceNameById(Guid id)
