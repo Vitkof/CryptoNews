@@ -28,10 +28,10 @@ namespace CryptoNews.Controllers
         public async Task<IActionResult> Index(Guid? sourceId, int pageNumber=1)
         {
             List<NewsDto> model;
-            if (sourceId == null)
+            /*if (sourceId == null)
             {
                 return NotFound();
-            }
+            }*/
 
             model = (await _newsService.GetNewsBySourceId(sourceId)).ToList();
             var itemsOnPage = 20;
@@ -43,13 +43,14 @@ namespace CryptoNews.Controllers
                 CountItems = model.Count
             };
 
-            var result = new NewsListWithPaginator()
+            var res = new NewsListWithPaginator()
             {
                 NewsPerPages = newsPerPages,
-                PageInfo = info
+                PageInfo = info,
+                IsAdmin = false
             };
 
-            return View(result);
+            return View(res);
         }
 
         // GET: News/Details/5
@@ -85,8 +86,12 @@ namespace CryptoNews.Controllers
         // GET: News/Create
         public async Task<IActionResult> Create()
         {
-            ViewData["RssSourceId"] = new SelectList(await _rssService.GetAllRssSources(), "Id", "Name");
-            return View();
+            //ViewData["RssSourceId"] = new SelectList(await _rssService.GetAllRssSources(), "Id", "Name");
+            var vm = new CreateNewsVM()
+            {
+                RssList = new SelectList(await _rssService.GetAllRssSources(), "Id", "Name")
+            };
+            return View(vm); 
         }
 
         // POST: News/Create
