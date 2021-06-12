@@ -1,13 +1,10 @@
-﻿using CryptoNews.Models;
-using Microsoft.AspNetCore.Html;
+﻿using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Mvc;
+
 
 namespace CryptoNews.HtmlHelpers
 {
@@ -20,10 +17,10 @@ namespace CryptoNews.HtmlHelpers
         {
             var name = ExpressionHelper.GetExpressionText(expression);
             name = hh.ViewContext.ViewData.TemplateInfo.GetFullHtmlFieldName(name);
-            var metadata = ModelMetadataProviders.Current.GetMetadataForProperty(
-                () => Activator.CreateInstance<TClass>(), typeof(TClass), name);
+            var meta = new EmptyModelMetadataProvider()
+                .GetMetadataForProperty(typeof(TClass), name);
 
-            return new HtmlString(metadata.DisplayName);
+            return new HtmlString(meta.DisplayName);
         }
     }
 }
