@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CryptoNews.DAL.Entities
 {
-    public class RssSource
+    public class RssSource : IBaseEntity
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

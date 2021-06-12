@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CryptoNews.DAL.Entities
 {
-    public class User
+    public class User : IBaseEntity
     {
         public Guid Id { get; set; }
 
