@@ -1,0 +1,17 @@
+﻿@model CryptoNews.Core.DTO.NewsDto
+
+<div class="card col-sm-12 col-md-6 col-lg-4 new-card">
+    <div class="card-body">
+        <h5 class="preview-text">@Model.Title</h5>
+        @*<h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>*@
+        <p class="card-text">@Model.Description</p>
+        <a class="card-link" asp-action="Details" asp-route-id="@Model.Id">Read on aggregator</a>
+
+        <a asp-host="onliner.by">Read in source</a>
+        <br>
+            <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+            <a asp-action="Details" asp-route-id="@Model.Id">Details</a> |
+            <a asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+        
+    </div>
+</div>

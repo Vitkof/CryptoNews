@@ -69,3 +69,30 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+.news-card {
+    margin:5px;
+}
+.news-card:last-child{
+    margin: 5px 0px 5px;
+}
+
+.preview-text {
+    margin-bottom:.75rem;
+    font-family: 'Franklin Gothic Medium'
+}
+
+.pages-fastnav {
+    display: -moz-inline-stack;
+    display: inline-block;
+    border: 2px solid #fff;
+    padding: 1px !important;
+    list-style: none !important;
+    background: #cecece url(.../img/bgs.png) no-repeat -6100px 0;
+    vertical-align: top;
+}
+
+    .pages-fastnav li {
+        float: left;
+        background: #f9f9f9 url(.../img/bgs.png) no-repeat -10000px 50%;
+        padding: 0 !important;
+    }

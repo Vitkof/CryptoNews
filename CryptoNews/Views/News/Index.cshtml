@@ -10,67 +10,15 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayColumnNameFor(Model.NewsPerPages, m => m.Description)
-            </th>
-            <th>
-                @Html.DisplayColumnNameFor(Model.NewsPerPages, m => m.Description)
-            </th>
-            <th>
-                @Html.DisplayColumnNameFor(Model.NewsPerPages, m => m.Body)
-            </th>
-            <th>
-                @Html.DisplayColumnNameFor(Model.NewsPerPages, m => m.PubDate)
-            </th>
-            <th>
-                @Html.DisplayColumnNameFor(Model.NewsPerPages, m => m.Rating)
-            </th>
-            <th>
-                @Html.DisplayColumnNameFor(Model.NewsPerPages, m => m.Url)
-            </th>
-            <th>
-                @Html.DisplayColumnNameFor(Model.NewsPerPages, m => m.RssSourceId)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.NewsPerPages) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Body)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PubDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rating)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Url)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RssSourceId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
 
-    </tbody>
-</table>
+
+    <div class="row">
+        @foreach (var item in Model.NewsPerPages)
+        {
+            await Html.RenderPartialAsync("PreviewNews", item);
+        }
+    </div>
+
 
 <div class="btn-group">
     @Html.CreatePaginator(Model.PageInfo, i => Url.Action("Index", new { 
@@ -78,5 +26,6 @@
     pageNumber = i 
 }))
 </div>
-
-<pag page-info="Model.PageInfo" page-action="Index"></pag>
+    
+<pag source-id="@Model.NewsPerPages.FirstOrDefault().RssSourceId" page-info="Model.PageInfo" page-action="Index" ></pag>
+    
