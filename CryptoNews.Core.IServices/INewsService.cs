@@ -7,15 +7,17 @@ namespace CryptoNews.Core.IServices
 {
     public interface INewsService
     {
-        Task<IEnumerable<NewsDto>> FindNews();
+        IEnumerable<NewsDto> AggregateNewsFromRssSources(IEnumerable<RssSourceDto> rssDtos);
         NewsDto GetNewsById(Guid id);
+        Task<IEnumerable<NewsDto>> GetAllNews();
         Task<IEnumerable<NewsDto>> GetNewsBySourceId(Guid? id);
-        Task<NewsWithRssSourceNameDto> GetNewsWithRssSourceNameById(Guid id);
+        NewsWithRssSourceNameDto GetNewsWithRssSourceNameById(Guid id);
 
         Task AddNews(NewsDto nd);
         Task AddRangeNews(IEnumerable<NewsDto> newsDto);
         Task<int> EditNews(NewsDto news);
         Task<int> DeleteNews(NewsDto news);
+        Task<int> DeleteRangeNews(IEnumerable<NewsDto> nds);
         bool Exist(Guid id);
     }
 }

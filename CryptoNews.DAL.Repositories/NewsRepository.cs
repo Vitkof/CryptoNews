@@ -19,5 +19,10 @@ namespace CryptoNews.DAL.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public IQueryable<News> GetNotNullRss()
+        {
+            return _table.Where(n => n.RssSourceId != null); 
+        }
     }
 }

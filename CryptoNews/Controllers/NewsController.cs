@@ -10,6 +10,7 @@ using CryptoNews.Core.IServices;
 using CryptoNews.Core.DTO;
 using CryptoNews.Models;
 using CryptoNews.Models.ViewModels;
+using Serilog;
 
 namespace CryptoNews.Controllers
 {
@@ -194,6 +195,40 @@ namespace CryptoNews.Controllers
         private bool NewsExists(Guid id)
         {
             return _newsService.Exist(id);
+        }
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAll(CreateNewsVM source)
+        {
+            var all = _newsService.GetAllNews();//_context.News.FindAsync(id);
+            await _newsService.DeleteRangeNews((IEnumerable<NewsDto>)all);
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Aggregate()
+        {
+            return View();
+        }
+        
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Aggregate(CreateNewsVM source)
+        {
+            try
+            {
+                var rssSources = await _rssService.GetAllRssSources();
+                var aggregateList = _newsService.AggregateNewsFromRssSources(rssSources);
+                await _newsService.AddRangeNews(aggregateList);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"{ex.Message}");
+            }
+            return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.ServiceModel.Syndication" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CryptoNews.Core.IServices\CryptoNews.Core.IServices.csproj" />
     <ProjectReference Include="..\CryptoNews.DAL.IRepositories\CryptoNews.DAL.IRepositories.csproj" />
     <ProjectReference Include="..\CryptoNews.DAL.Repositories\CryptoNews.DAL.Repositories.csproj" />

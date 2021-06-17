@@ -25,13 +25,11 @@ namespace CryptoNews.DAL.Repositories
         public async Task Create(T entity)
         {
             await _table.AddAsync(entity);
-            await _db.SaveChangesAsync();
         }
 
         public async Task CreateRange(IEnumerable<T> entitiesRange)
         {
             await _table.AddRangeAsync(entitiesRange);
-            await _db.SaveChangesAsync();
         }
 
         

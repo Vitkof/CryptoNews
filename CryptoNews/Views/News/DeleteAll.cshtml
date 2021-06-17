@@ -1,0 +1,18 @@
+﻿@model CryptoNews.Models.ViewModels.CreateNewsVM
+
+@{
+    ViewData["Title"] = "DeleteAll";
+}
+
+<h1>Delete News</h1>
+
+<h3>Are you sure you want to delete all news?</h3>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="DeleteAll">
+            <input type="submit" value="Delete" class="btn btn-danger" /> |
+            <a asp-action="Index">Cancel</a>
+        </form>
+    </div>
+</div>
