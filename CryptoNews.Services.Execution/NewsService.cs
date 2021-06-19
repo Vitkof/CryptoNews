@@ -16,10 +16,25 @@ namespace CryptoNews.Services.Implement
     public class NewsService : INewsService
     {
         private readonly IUnitOfWork _unit;
+        private readonly OnlinerParserService _onlinerParser;
+        private readonly LentaParserService _lentaParser;
+        private readonly CointelegraphParserService _cointelegraphParser;
+        private readonly BitcoinNewsParserService _bitcoinNewsParser;
+        private readonly CryptoNinjasParserService _cryptoNinjasParser;
 
-        public NewsService(IUnitOfWork unitOfWork)
+        public NewsService(IUnitOfWork unitOfWork,
+            OnlinerParserService onlinerParserSvc,
+            LentaParserService lentaParserSvc,
+            CointelegraphParserService cointelegraphParserSvc,
+            BitcoinNewsParserService bitcoinNewsParserSvc,
+            CryptoNinjasParserService cryptoNinjasParserSvc)
         {
             _unit = unitOfWork;
+            _onlinerParser = onlinerParserSvc;
+            _lentaParser = lentaParserSvc;
+            _cointelegraphParser = cointelegraphParserSvc;
+            _bitcoinNewsParser = bitcoinNewsParserSvc;
+            _cryptoNinjasParser = cryptoNinjasParserSvc;
         }
 
         private static News FromDtoToNews(NewsDto nd)
@@ -51,24 +66,25 @@ namespace CryptoNews.Services.Implement
             };
         }
 
-        public IEnumerable<NewsDto> AggregateNewsFromRssSources(IEnumerable<RssSourceDto> rssSources)
+        public async Task<IEnumerable<NewsDto>> AggregateNewsFromRssSourcesAsync(IEnumerable<RssSourceDto> rssSources)
         {
-            var listNewsDtos = new List<NewsDto>();
+            var resultList = new List<NewsDto>();
 
             foreach (var rssSrc in rssSources)
-            {
+            {                
                 using var reader = XmlReader.Create(rssSrc.Url);
                 SyndicationFeed feed = SyndicationFeed.Load(reader);
                 reader.Close();
 
                 if (feed.Items.Any())
                 {
+                    var listDtos = new List<NewsDto>();
                     var currentNewsUrls = _unit.News
                         .ReadAll()
                         .Select(news => news.Url)
                         .ToList();
-
-                    listNewsDtos.AddRange(feed.Items
+                    /*
+                    listDtos.AddRange(feed.Items
                         .Where(item => !currentNewsUrls.Any(url => url.Equals(item.Id)))
                         .Select(item => new NewsDto()
                         {
@@ -78,11 +94,56 @@ namespace CryptoNews.Services.Implement
                             Body = "Заглушка",
                             PubDate = item.PublishDate.LocalDateTime,
                             Url = item.Id,
-                            RssSourceId = rssSrc.Id
-                        }));
+                            RssSourceId = rssSrc.Id,
+
+                            /*Body = (rssSrc.Id.Equals(new Guid("6a436520-8c7a-4c5a-a644-91521ce8055f")))
+                                ? _onlinerParser.Parse(item.Id)
+                                : _onlinerParser.Parse(item.Id)
+                        
+                        }));*/
+                    for(int i=0; i<=7; i++)
+                    {
+                        var syndicationItem = feed.Items.ElementAt(i);
+                        if (!currentNewsUrls.Any(url => url.Equals(syndicationItem.Id)))
+                        {
+                            var newsDto = new NewsDto()
+                            {
+                                Id = Guid.NewGuid(),
+                                RssSourceId = rssSrc.Id,
+                                Url = syndicationItem.Id,
+                                Title = syndicationItem.Title.Text,
+                                Description = syndicationItem.Summary.Text //clean from html(?)
+                            };
+                            listDtos.Add(newsDto);
+                        }
+                    }
+
+                    if (rssSrc.Id.Equals(new Guid("3afa1397-89d4-46bd-8f84-84418ac4c853")))
+                    {
+                        await BodyDescFillerAsync(listDtos, _lentaParser);
+                    }
+                    else if(rssSrc.Id.Equals(new Guid("6a436520-8c7a-4c5a-a644-91521ce8055f")))
+                    {
+                        foreach (var dto in listDtos)
+                        {
+                            dto.Body = await _onlinerParser.ParseBody(dto.Url);
+                            string description = dto.Body;
+                            dto.Description = await _onlinerParser.CleanDescription(description);
+                        }
+                    }
+                    else if(rssSrc.Id.Equals(new Guid("27369831-41fb-4d2b-b0e2-f6a24b77337c")))
+                    {
+                        foreach (var dto in listDtos)
+                        {
+                            dto.Body = await _cointelegraphParser.ParseBody(dto.Url);
+                            dto.Description = await _cointelegraphParser.CleanDescription(dto.Description);
+                        }
+                    }
+                    resultList.AddRange(listDtos);
                 }
+                
             }
-            return listNewsDtos;
+            return resultList;
             /*var range = listNewsDtos.Select(nd => FromDtoToNews(nd));
             await _unit.News.CreateRange(range);
             await _unit.SaveChangesAsync();*/
@@ -187,6 +248,15 @@ namespace CryptoNews.Services.Implement
                 .ToListAsync();
 
             return newsDtos;
+        }
+
+        private static async Task BodyDescFillerAsync(IEnumerable<NewsDto> dtos, IWebPageParser parser)
+        {
+            foreach(var dto in dtos)
+            {
+                dto.Body = await parser.ParseBody(dto.Url);
+                dto.Description = await parser.CleanDescription(dto.Description);
+            }
         }
     }
 }

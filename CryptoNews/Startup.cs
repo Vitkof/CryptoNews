@@ -50,6 +50,11 @@ namespace CryptoNews
             services.AddTransient<IRepository<RssSource>, RssRepository>();
             services.AddTransient<IRepository<User>, UserRepository>();
             services.AddTransient<IRepository<Role>, RoleRepository>();
+            services.AddTransient<OnlinerParserService>();
+            services.AddTransient<LentaParserService>();
+            services.AddTransient<CointelegraphParserService>();
+            services.AddTransient<BitcoinNewsParserService>();
+            services.AddTransient<CryptoNinjasParserService>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<INewsService, NewsService>();

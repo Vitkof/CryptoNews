@@ -7,7 +7,7 @@ namespace CryptoNews.Core.IServices
 {
     public interface INewsService
     {
-        IEnumerable<NewsDto> AggregateNewsFromRssSources(IEnumerable<RssSourceDto> rssDtos);
+        Task<IEnumerable<NewsDto>> AggregateNewsFromRssSourcesAsync(IEnumerable<RssSourceDto> rssDtos);
         NewsDto GetNewsById(Guid id);
         Task<IEnumerable<NewsDto>> GetAllNews();
         Task<IEnumerable<NewsDto>> GetNewsBySourceId(Guid? id);

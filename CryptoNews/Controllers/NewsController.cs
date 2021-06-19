@@ -11,6 +11,7 @@ using CryptoNews.Core.DTO;
 using CryptoNews.Models;
 using CryptoNews.Models.ViewModels;
 using Serilog;
+using CryptoNews.Services.Implement;
 
 namespace CryptoNews.Controllers
 {
@@ -19,7 +20,8 @@ namespace CryptoNews.Controllers
         private readonly INewsService _newsService;
         private readonly IRssSourceService _rssService;
 
-        public NewsController(INewsService newsService, IRssSourceService rssSource)
+        public NewsController(INewsService newsService, 
+            IRssSourceService rssSource)
         {
             _newsService = newsService;
             _rssService = rssSource;
@@ -221,7 +223,7 @@ namespace CryptoNews.Controllers
             try
             {
                 var rssSources = await _rssService.GetAllRssSources();
-                var aggregateList = _newsService.AggregateNewsFromRssSources(rssSources);
+                var aggregateList = await _newsService.AggregateNewsFromRssSourcesAsync(rssSources);
                 await _newsService.AddRangeNews(aggregateList);
             }
             catch (Exception ex)
