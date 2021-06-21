@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -59,8 +61,10 @@ namespace CryptoNews
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<INewsService, NewsService>();
             services.AddScoped<IRssSourceService, RssSourceService>();
+            services.AddScoped<IUserService, UserService>();
 
-            
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(opt => opt.LoginPath = new PathString("/Account/Login"));
             
             services.AddMemoryCache();
         }
@@ -83,6 +87,7 @@ namespace CryptoNews
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

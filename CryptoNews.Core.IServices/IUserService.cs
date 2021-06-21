@@ -7,11 +7,11 @@ namespace CryptoNews.Core.IServices
 {
     public interface IUserService
     {
+        string GetHashPassword(string pass);
         Task<IEnumerable<UserDto>> FindUsers();
         UserDto GetUserById(Guid id);
 
-        Task AddUser(UserDto ud);
-        Task AddRangeUsers(IEnumerable<UserDto> usersDto);
+        Task<bool> AddUser(UserDto ud);
         Task<int> EditUser(UserDto ud);
         Task<int> DeleteUser(UserDto ud);
     }

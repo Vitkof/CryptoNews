@@ -1,0 +1,33 @@
+﻿@model CryptoNews.Models.ViewModels.RegisterVM
+
+<h2>Registration</h2>
+
+<form asp-controller="Account" asp-action="Register" asp-antiforgery="true" method="post">
+    <div class="validation" asp-validation-summary="ModelOnly"></div>
+    <div class="form-group">
+        <label asp-for="Email" class="control-label">Email</label>
+        <input asp-for="Email" type="text" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Password" class="control-label">Password</label>
+        <input asp-for="Password" type="text" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="PasswordConfirm" class="control-label">Password Confirmation</label>
+        <input asp-for="PasswordConfirm" type="text" />
+        <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Register" class="btn btn-primary" />
+    </div>
+
+
+</form>
+
+@section Scripts
+{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

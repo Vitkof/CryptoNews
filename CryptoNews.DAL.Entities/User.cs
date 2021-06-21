@@ -23,6 +23,7 @@ namespace CryptoNews.DAL.Entities
 
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
+        public string PasswordHash { get; set; }
 
         public virtual ICollection<Comment> CommentsCollection { get; set; }
     }
