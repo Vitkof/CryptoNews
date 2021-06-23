@@ -35,11 +35,16 @@ namespace CryptoNews.Services.Implement
         {
             try
             {
+                var roleId = _unit.Roles.Read(r => r.Name.Equals("User")).Id;
                 await _unit.Users.Create(new User()
                 {
                     Id = ud.Id,
                     Email = ud.Email,
-                    PasswordHash = ud.PasswordHash
+                    PasswordHash = ud.PasswordHash,
+                    RoleId = roleId,
+                    RegisterTime = DateTime.Now,
+                    FirstName = "Victor",
+                    LastName = "Chumakov"
                 });
                 await _unit.SaveChangesAsync();
                 return true;
@@ -49,6 +54,19 @@ namespace CryptoNews.Services.Implement
                 Log.Error(ex.Message);
                 return false;
             }
+        }
+
+        public UserDto GetUserByEmail(string email)
+        {
+            var user = _unit.Users.Read(user => user.Email.Equals(email));
+
+            return new UserDto()
+            {
+                Id = user.Id,
+                Email = user.Email,
+                PasswordHash = user.PasswordHash,
+                RoleId = user.RoleId
+            };
         }
 
 
@@ -71,7 +89,5 @@ namespace CryptoNews.Services.Implement
         {
             throw new NotImplementedException();
         }
-
-        
     }
 }

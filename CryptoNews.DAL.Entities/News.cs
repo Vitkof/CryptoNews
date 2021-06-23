@@ -21,7 +21,7 @@ namespace CryptoNews.DAL.Entities
         [Url]
         public string Url { get; set; }
 
-        public Guid RssSourceId { get; set; } //ForeignKey
+        public Guid? RssSourceId { get; set; } //ForeignKey
         public virtual RssSource RssSource { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
     }

@@ -9,7 +9,8 @@ a.navbar-brand {
 
 /* Provide sufficient contrast against white background */
 a {
-  color: #0366d6;
+    color: #cf114f;
+    text-decoration: none;
 }
 
 .btn-primary {
@@ -51,6 +52,16 @@ button.accept-policy {
   line-height: inherit;
 }
 
+/*Headers style*/
+h2 {
+    display: block;
+    font-size: 2em;
+    margin-block-start: 0.67em;
+    margin-block-end: 0.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+}
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
@@ -59,8 +70,10 @@ html {
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+    background-color: #fbe4e4;
+    color: #000;
 }
 .footer {
   position: absolute;
@@ -69,6 +82,9 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+/* Preview News styles
+-----------------------------------------------*/
 .news-card {
     margin:5px;
 }
@@ -81,6 +97,8 @@ body {
     font-family: 'Franklin Gothic Medium'
 }
 
+/* Pagination style 
+-----------------------------------------------*/
 .pages-fastnav {
     display: -moz-inline-stack;
     display: inline-block;
@@ -96,3 +114,44 @@ body {
         background: #f9f9f9 url(.../img/bgs.png) no-repeat -10000px 50%;
         padding: 0 !important;
     }
+
+/* Registration-style
+-------------------------------------------------- */
+.flyer__title {
+    box-sizing: border-box;
+    max-width: 328px;
+    margin: 0 auto 15px;
+    padding-right: 20px;
+    font-family: "Montserrat",system-ui,sans-serif;
+    font-size: 22px;
+    line-height: 24px;
+}
+
+.flyer__box {
+    overflow: hidden;
+    width: 368px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #fff;
+    border-radius: 9px;
+}
+
+.flyer__body {
+    padding: 17px 20px 30px;
+}
+
+.flyer__footer {
+    width: 328px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 11px;
+}
+
+.flyer__footer p {
+    margin: 0;
+    color: #777d82;
+    font-size: 13px;
+}
+.flyer__footer a {
+    font-weight: 700;
+}

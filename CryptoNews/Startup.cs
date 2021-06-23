@@ -20,6 +20,8 @@ using CryptoNews.DAL.IRepositories;
 using CryptoNews.DAL.Repositories;
 using CryptoNews.Core.IServices;
 using CryptoNews.Services.Implement;
+using CryptoNews.Policies;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CryptoNews
 {
@@ -62,9 +64,17 @@ namespace CryptoNews
             services.AddScoped<INewsService, NewsService>();
             services.AddScoped<IRssSourceService, RssSourceService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRoleService, RoleService>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(opt => opt.LoginPath = new PathString("/Account/Login"));
+                .AddCookie(opt =>
+                {
+                    opt.LoginPath = new PathString("/Account/Login");
+                    opt.AccessDeniedPath = new PathString("/Account/Login");
+                });                 
+
+            services.AddAuthorization(opt => opt.AddPolicy("18+",policy=> policy.Requirements.Add(new MinimalAgeReq(18))));
+            services.AddSingleton<IAuthorizationHandler, MinimalAgeHandler>();
             
             services.AddMemoryCache();
         }

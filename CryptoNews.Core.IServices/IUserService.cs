@@ -10,6 +10,7 @@ namespace CryptoNews.Core.IServices
         string GetHashPassword(string pass);
         Task<IEnumerable<UserDto>> FindUsers();
         UserDto GetUserById(Guid id);
+        UserDto GetUserByEmail(string email);
 
         Task<bool> AddUser(UserDto ud);
         Task<int> EditUser(UserDto ud);

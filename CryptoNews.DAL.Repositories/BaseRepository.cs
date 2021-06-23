@@ -34,9 +34,9 @@ namespace CryptoNews.DAL.Repositories
 
         
 
-        public T Read(Expression<Func<T, bool>> where)
+        public T Read(Expression<Func<T, bool>> predic)
         {
-            throw new NotImplementedException();
+            return _table.Where(predic).FirstOrDefault();
         }
 
         public IQueryable<T> ReadAll()

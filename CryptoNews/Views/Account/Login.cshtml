@@ -1,10 +1,11 @@
-﻿@model CryptoNews.Models.ViewModels.RegisterVM
+﻿@model CryptoNews.Models.ViewModels.LoginVM
 
-<h2 class="flyer__title">Registration</h2>
+<h2 class="flyer__title">Login</h2>
 
 <div class="flyer__box">
     <div class="flyer__body">
-        <form asp-controller="Account" asp-action="Register" asp-antiforgery="true" method="post">
+        <form asp-controller="Account" asp-action="Login" asp-antiforgery="true" method="post">
+            <input type="hidden" asp-for="ReturnUrl">
             <div class="validation" asp-validation-summary="ModelOnly"></div>
             <div class="form-group">
                 <label asp-for="Email" class="control-label">Email</label>
@@ -17,12 +18,7 @@
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PasswordConfirm" class="control-label">Password Confirmation</label>
-                <input asp-for="PasswordConfirm" type="password" />
-                <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Register" class="btn btn-primary" />
+                <input type="submit" value="Log In" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -30,8 +26,8 @@
 
 <div class="flyer__footer">
     <p>
-        <a href="login">Login</a>
-        for those who are already registered
+        <a href="/register">Register</a>
+        for those who are on the site for the first time
     </p>
 </div>
 

@@ -9,10 +9,8 @@ namespace CryptoNews.DAL.Entities
         public Guid Id { get; set; }
 
         [StringLength(50, MinimumLength =2), Required]
-        [RegularExpression(@"^([A-Z]+|[А-ЯЁ]+)([a-zA-Z]*|[а-яёА-ЯЁ]*)$")]
         public string FirstName { get; set; }
-        [StringLength(50, MinimumLength = 2), Required]
-        [RegularExpression(@"^([A-Z]+|[А-ЯЁ]+)([a-zA-Z]*|[а-яёА-ЯЁ]*)$")]
+        [StringLength(50, MinimumLength = 2), Required]        
         public string LastName { get; set; }
 
         public string FullName {
@@ -21,9 +19,14 @@ namespace CryptoNews.DAL.Entities
             } 
         }
 
+        [DataType(DataType.DateTime)]
+        public DateTime RegisterTime { get; set; }
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
         public string PasswordHash { get; set; }
+
+        public Guid RoleId { get; set; }
+        public Role Role { get; set; }
 
         public virtual ICollection<Comment> CommentsCollection { get; set; }
     }

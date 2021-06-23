@@ -12,9 +12,11 @@ using CryptoNews.Models;
 using CryptoNews.Models.ViewModels;
 using Serilog;
 using CryptoNews.Services.Implement;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CryptoNews.Controllers
 {
+    [Authorize(Roles = "Admin, User")]
     public class NewsController : Controller
     {
         private readonly INewsService _newsService;
