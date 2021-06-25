@@ -22,6 +22,7 @@ using CryptoNews.Core.IServices;
 using CryptoNews.Services.Implement;
 using CryptoNews.Policies;
 using Microsoft.AspNetCore.Authorization;
+using AutoMapper;
 
 namespace CryptoNews
 {
@@ -54,6 +55,7 @@ namespace CryptoNews
             services.AddTransient<IRepository<RssSource>, RssRepository>();
             services.AddTransient<IRepository<User>, UserRepository>();
             services.AddTransient<IRepository<Role>, RoleRepository>();
+            services.AddTransient<IRepository<Comment>, CommentRepository>();
             services.AddTransient<OnlinerParserService>();
             services.AddTransient<LentaParserService>();
             services.AddTransient<CointelegraphParserService>();
@@ -65,6 +67,14 @@ namespace CryptoNews
             services.AddScoped<IRssSourceService, RssSourceService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<ICommentService, CommentService>();
+
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new AutoMapper());
+            });
+            var mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(opt =>

@@ -67,7 +67,7 @@ namespace CryptoNews.Controllers
             if (ModelState.IsValid)
             {
                 var userDto = _userService.GetUserByEmail(logVM.Email);
-                if(userDto != null)
+                if (userDto != null)
                 {
                     var passHash = _userService.GetHashPassword(logVM.Password);
                     if (passHash.Equals(userDto.PasswordHash))
@@ -77,7 +77,8 @@ namespace CryptoNews.Controllers
                             ? RedirectToAction("Index", "Home")
                             : Redirect(logVM.ReturnUrl);
                     }
-                }               
+                }
+                else NotFound();
             }
 
             return View(logVM);

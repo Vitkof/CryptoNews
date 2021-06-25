@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace CryptoNews.DAL.Entities
+namespace CryptoNews.Core.DTO
 {
-    public class Comment : IBaseEntity
+    public class CommentDto
     {
         public Guid Id { get; set; }
-        [StringLength(2000)]
         public string Text { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:MMM-dd HH:mm}", ApplyFormatInEditMode = true)]
@@ -16,12 +18,8 @@ namespace CryptoNews.DAL.Entities
         public byte Rating { get; set; }
 
         public Guid NewsId { get; set; }
-        public virtual News News { get; set; }
-
         public Guid UserId { get; set; }
-        public virtual User User { get; set; }
-
         public Guid? ParentId { get; set; }
-        public virtual Comment Parent { get; set; }
+
     }
 }

@@ -56,10 +56,10 @@ namespace CryptoNews.Services.Implement
             }
         }
 
-        public UserDto GetUserByEmail(string email)
+        public UserDto? GetUserByEmail(string email)
         {
             var user = _unit.Users.Read(user => user.Email.Equals(email));
-
+            if (user is null) return null;
             return new UserDto()
             {
                 Id = user.Id,

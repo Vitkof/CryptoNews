@@ -13,20 +13,24 @@ using CryptoNews.Models.ViewModels;
 using Serilog;
 using CryptoNews.Services.Implement;
 using Microsoft.AspNetCore.Authorization;
+using NewsAggregator.Models.ViewModels;
 
 namespace CryptoNews.Controllers
 {
-    [Authorize(Roles = "Admin, User")]
+    //[Authorize(Roles = "Admin, User")]
     public class NewsController : Controller
     {
         private readonly INewsService _newsService;
         private readonly IRssSourceService _rssService;
+        private readonly ICommentService _commentService;
 
         public NewsController(INewsService newsService, 
-            IRssSourceService rssSource)
+            IRssSourceService rssSource,
+            ICommentService commentSvc)
         {
             _newsService = newsService;
             _rssService = rssSource;
+            _commentService = commentSvc;
         }
 
         // GET: News/
@@ -72,7 +76,8 @@ namespace CryptoNews.Controllers
             {
                 return NotFound();
             }
-            var viewModel = new NewsWithRssSourceNameDto()
+            var comments = _commentService.GetCommentsByNewsId(@news.Id);
+            var vm = new NewsDetailsVM()
             {
                 Id = @news.Id,
                 Title = @news.Title,
@@ -82,10 +87,10 @@ namespace CryptoNews.Controllers
                 Rating = @news.Rating,
                 Url = @news.Url,
                 RssSourceId = @news.RssSourceId,
-                RssSourceName = @news.RssSourceName
-
+                RssSourceName = @news.RssSourceName,
+                Comments = comments
             };
-            return View(@news);
+            return View(vm);
         }
 
         // GET: News/Create

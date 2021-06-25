@@ -15,22 +15,25 @@ namespace CryptoNews.DAL.Repositories
         private readonly IRepository<RssSource> _rssRepos;
         private readonly IRepository<User> _userRepos;
         private readonly IRepository<Role> _roleRepos;
+        private readonly IRepository<Comment> _commentRepos;
 
         public UnitOfWork(CryptoNewsContext cont, IRepository<News> newsR,
             IRepository<RssSource> rssR, IRepository<User> userR, 
-            IRepository<Role> roleR)
+            IRepository<Role> roleR, IRepository<Comment> commentR)
         {
             _cont = cont;
             _newsRepos = newsR;
             _rssRepos = rssR;
             _userRepos = userR;
             _roleRepos = roleR;
+            _commentRepos = commentR;
         }
 
         public IRepository<News> News => _newsRepos;
         public IRepository<RssSource> RssSources => _rssRepos;
         public IRepository<User> Users => _userRepos;
         public IRepository<Role> Roles => _roleRepos;
+        public IRepository<Comment> Comments => _commentRepos;
 
 
         public async Task<int> SaveChangesAsync()

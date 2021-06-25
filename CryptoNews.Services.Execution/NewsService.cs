@@ -21,13 +21,15 @@ namespace CryptoNews.Services.Implement
         private readonly CointelegraphParserService _cointelegraphParser;
         private readonly BitcoinNewsParserService _bitcoinNewsParser;
         private readonly CryptoNinjasParserService _cryptoNinjasParser;
+        private readonly ICommentService _commentService;
 
         public NewsService(IUnitOfWork unitOfWork,
             OnlinerParserService onlinerParserSvc,
             LentaParserService lentaParserSvc,
             CointelegraphParserService cointelegraphParserSvc,
             BitcoinNewsParserService bitcoinNewsParserSvc,
-            CryptoNinjasParserService cryptoNinjasParserSvc)
+            CryptoNinjasParserService cryptoNinjasParserSvc,
+            ICommentService commentSvc)
         {
             _unit = unitOfWork;
             _onlinerParser = onlinerParserSvc;
@@ -35,6 +37,7 @@ namespace CryptoNews.Services.Implement
             _cointelegraphParser = cointelegraphParserSvc;
             _bitcoinNewsParser = bitcoinNewsParserSvc;
             _cryptoNinjasParser = cryptoNinjasParserSvc;
+            _commentService = commentSvc;
         }
 
         private static News FromDtoToNews(NewsDto nd)
@@ -226,18 +229,18 @@ namespace CryptoNews.Services.Implement
         public NewsWithRssSourceNameDto GetNewsWithRssSourceNameById(Guid id)
         {
             var res = _unit.News.ReadMany(n => n.Id == id,
-                                        n => n.RssSource)
-                .Select(n => new NewsWithRssSourceNameDto()
+                                        n => n.RssSource).FirstOrDefault();                                       
+            return new NewsWithRssSourceNameDto()
                 {
-                    Id = n.Id,
-                    Title = n.Title,
-                    Description = n.Description,
-                    Body = n.Body,
-                    PubDate = n.PubDate,
-                    Rating = n.Rating,
-                    RssSourceId = (Guid)n.RssSourceId
-                });
-            return (NewsWithRssSourceNameDto)res;
+                    Id = res.Id,
+                    Title = res.Title,
+                    Description = res.Description,
+                    Body = res.Body,
+                    PubDate = res.PubDate,
+                    Rating = res.Rating,
+                    RssSourceId = (Guid)res.RssSourceId
+                };
+            
         }
 
         public async Task<IEnumerable<NewsDto>> GetAllNews()
