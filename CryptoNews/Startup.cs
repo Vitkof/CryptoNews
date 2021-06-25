@@ -23,6 +23,7 @@ using CryptoNews.Services.Implement;
 using CryptoNews.Policies;
 using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
+using CryptoNews.Services.Implement.Mapper;
 
 namespace CryptoNews
 {
@@ -70,10 +71,8 @@ namespace CryptoNews
             services.AddScoped<ICommentService, CommentService>();
 
             var mapperConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new AutoMapper());
-            });
-            var mapper = mapperConfig.CreateMapper();
+            mc.AddProfile(new MappingProfile()));
+            IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
