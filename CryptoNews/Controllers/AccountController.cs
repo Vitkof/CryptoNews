@@ -117,5 +117,15 @@ namespace CryptoNews.Controllers
                 throw;
             }
         }
+
+        [HttpGet]
+        public IActionResult Settings()
+        {
+            var user = HttpContext.User.Claims.FirstOrDefault(cl => 
+            cl.Type.Equals(ClaimsIdentity.DefaultNameClaimType));
+
+            if (user != null) return View("LogoutInfo");
+            return View("LoginInfo");
+        }
     }
 }

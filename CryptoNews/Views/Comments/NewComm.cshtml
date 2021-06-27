@@ -4,13 +4,10 @@
 
 <form>
     <input type="hidden" id="newsId" name="newsId" value="@Model.NewsId" />
+
     <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">Email address</label>
-        <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
-    </div>
-    <div class="mb-3">
-        <label for="exampleFormControlTextarea1" class="form-label">Example textarea</label>
-        <textarea maxlength="2000" placeholder="What do you think about it?" class="form-control" id="commentText" rows="3"></textarea>
+        <label for="commText" class="form-label">Your comment:</label>
+        <textarea name="commText" maxlength="2000" placeholder="What do you think about it?" class="form-control" id="commText" rows="3"></textarea>
     </div>
 
     <div class="col-sm-12">

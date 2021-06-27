@@ -44,10 +44,11 @@ namespace CryptoNews.Controllers
             {
                 Id = Guid.NewGuid(),
                 NewsId = vm.NewsId,
-                Text = vm.Text,
+                Text = vm.CommText,
                 CreateAt = DateTime.Now,
                 UserId = userId,
-                Rating = 0//ParentID
+                Rating = 0,
+                ParentId = userId
             };
             await _commentService.AddComment(dto);
 

@@ -31,6 +31,8 @@ namespace CryptoNews.Services.Implement
         {
             return _unit.Comments
                 .ReadMany(comm => comm.NewsId.Equals(newsId))
+                .OrderBy(comm => comm.Rating)
+                .ThenBy(comm => comm.CreateAt)
                 .Select(comm => _mapper.Map<CommentDto>(comm)).ToList();
         }
 
@@ -40,14 +42,16 @@ namespace CryptoNews.Services.Implement
             await _unit.SaveChangesAsync();
         }
 
-        public Task<int> DeleteComment(CommentDto cd)
+        public async Task<int> DeleteComment(CommentDto cd)
         {
-            throw new NotImplementedException();
+            await _unit.Comments.Delete(cd.Id);
+            return await _unit.SaveChangesAsync();
         }
 
-        public Task<int> EditComment(CommentDto cd)
+        public async Task<int> EditComment(CommentDto cd)
         {
-            throw new NotImplementedException();
+            await _unit.Comments.Update(_mapper.Map<Comment>(cd));
+            return await _unit.SaveChangesAsync();
         }
     }
 }

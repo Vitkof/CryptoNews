@@ -92,8 +92,15 @@ body {
     margin: 5px 0px 5px;
 }
 
+.preview-text-wrapper{
+    background-color: red;
+    padding: 2px;
+    border-radius: 5px;
+}
+
 .preview-text {
-    margin-bottom:.75rem;
+    margin:.5rem 1.25rem;
+    color: white;
     font-family: 'Franklin Gothic Medium'
 }
 

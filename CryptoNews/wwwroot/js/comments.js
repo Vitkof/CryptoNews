@@ -2,8 +2,6 @@
 let isShowed = false;
 
 function toggleComments(newsId) {
-    //let url = window.location.pathname;
-    //let id = url.substring(url.lastIndexOf('/') + 1);
 
     if (commentsShow != null) {
         if (isShowed == true) {
@@ -27,21 +25,21 @@ function toggleComments(newsId) {
 
 function loadingComments(newsId, commentsContainer)
 {
-    let request = new XMLHttpRequest();
-    request.open('GET', `/Comments/List?newsId=${newsId}`, true);
+    let reqGet = new XMLHttpRequest();
+    reqGet.open('GET', `/Comments/List?newsId=${newsId}`, true);
 
-    request.onload = function ()
+    reqGet.onload = function ()
     {
-        if (request.status >= 200 && request.status < 400)
+        if (reqGet.status >= 200 && reqGet.status < 400)
         {
-            let resp = request.responseText;
+            let resp = reqGet.responseText;
             commentsContainer.innerHTML = resp;
 
             document.getElementById('send-comment')
                 .addEventListener("click", createComment);
         }
     }
-    request.send();
+    reqGet.send();
 }
 
 
@@ -51,90 +49,35 @@ function validateCommentData() {
 
 function createComment() {
 
-    let commentText = document.getElementById('commentText').value;
+    let commText = document.getElementById('commText').value;
     let newsId = document.getElementById('newsId').value;
 
-    validateCommentData();
+    //validateCommentData();
 
-    var postRequest = new XMLHttpRequest();
-    postRequest.open("POST", '/Comments/Create', true);
-    postRequest.setRequestHeader('Content-Type', 'application/json');
+    var reqPost = new XMLHttpRequest();
+    reqPost.open("POST", '/Comments/Create', true);
+    reqPost.setRequestHeader('Content-Type', 'application/json');
 
     //let requestData = new {
     //    commentText: commentText
     //}
 
-    postRequest.send(JSON.stringify({
-        commentText: commentText,
+    reqPost.send(JSON.stringify({
+        commText: commText,
         newsId: newsId
     }));
 
-    postRequest.onload = function () {
-        if (postRequest.status >= 200 && postRequest.status < 400) {
-            document.getElementById('commentText').value = '';
+    reqPost.onload = function () {
+        if (reqPost.status >= 200 && reqPost.status < 400) {
+            document.getElementById('commText').value = '';
 
             //commentsContainer.innerHTML += '';
 
             loadingComments(newsId);
         }
-    }
+    }   
 }
 
-var getCommentsIntervalId = setInterval(function () {
-    loadingComments(newsId);
-}, 15000);
-
-
-
-
-function loadCommentWithJquery(newsId, commentsContainer)
-{
-    $.ajax({
-        url: `/Comments/List?newsId=${newsId}`
-
-    }).done(function (data) {
-        commentsContainer.html(data);
-        commentsContainer.append(
-            '<button id="special-button" type="button" class="btn btn-primary">Add</button>');
-
-
-    })
-        .fail(function () {
-            alert("error");
-        });
-
-}
-
-//document.onmousemove = function (e) {
-//    let mousecoords = getMousePos(e);
-//    console.log(`x = ${mousecoords.x} y =${mousecoords.y}`);
-//};
-//function getMousePos(e) {
-//    return { x: e.clientX, y: e.clientY };
-//}
-
-//commentsDisplaySwitcherElement.onmouseover = function () {
-//    commentsDisplaySwitcherElement.className = commentsDisplaySwitcherElement.className.replace("btn-primary", "btn-info");
-//}
-//commentsDisplaySwitcherElement.onmouseout = function () {
-//    commentsDisplaySwitcherElement.className = commentsDisplaySwitcherElement.className.replace("btn-info", "btn-primary");
-//}
-/*
- * Mouse events
- * click
- * contextmenu
- * mouseover/mouseout
- * mousedown / mouseup
- * mousemove
- *
- * Form control events
- * submit
- * change
- * focus
- *
- * Keyboard events
- * keydown / keyup
- *
- * Document events
- * DOMContentLoaded
- */
+//var getCommentsIntervalId = setInterval(function () {
+//    loadingComments(newsId);
+//}, 15000);
