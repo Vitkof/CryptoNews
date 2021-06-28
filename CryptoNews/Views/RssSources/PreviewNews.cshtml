@@ -11,9 +11,9 @@
         
         <div id="preview-footer">
             <p>@Model.PubDate</p>
-            <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-            <a asp-action="Details" asp-route-id="@Model.Id">Details</a> |
-            <a asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+            
+            <a asp-controller="News" asp-action="Details" asp-route-id="@Model.Id">Details</a> |
+            
 
             <br>
 

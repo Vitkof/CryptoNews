@@ -48,7 +48,7 @@ namespace CryptoNews.Controllers
                 CreateAt = DateTime.Now,
                 UserId = userId,
                 Rating = 0,
-                ParentId = userId
+                ParentId = null
             };
             await _commentService.AddComment(dto);
 

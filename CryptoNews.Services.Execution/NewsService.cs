@@ -137,10 +137,15 @@ namespace CryptoNews.Services.Implement
                         await BodyDescFillerAsync(listDtos, _cointelegraphParser);
                     }
 
-                    else if (rssSrc.Name.Equals("Bitcoin News"))
+                    /*else if (rssSrc.Name.Equals("Bitcoin News"))
                     {
-                        await BodyDescFillerAsync(listDtos, _bitcoinNewsParser);
-                    }
+                        foreach (var dto in listDtos)
+                        {
+                            dto.Body = await _bitcoinNewsParser.ParseBody(dto.Url);
+                            string description = dto.Body;
+                            dto.Description = await _bitcoinNewsParser.CleanDescription(description);
+                        }
+                    }*/
 
                     resultList.AddRange(listDtos);
                 }
