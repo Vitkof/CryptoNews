@@ -8,6 +8,11 @@ namespace CryptoNews.Models.ViewModels
 {
     public class RegisterVM
     {
+        [Required]
+        public string FirstName { get; set; }
+        [Required]
+        public string LastName { get; set; }
+
         [Required(ErrorMessage = "fill in your email address")]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }

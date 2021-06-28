@@ -40,6 +40,8 @@ namespace CryptoNews.Controllers
                 if (await _userService.AddUser(new UserDto()
                 {
                     Id = Guid.NewGuid(),
+                    FirstName = regVM.FirstName,
+                    LastName = regVM.LastName,
                     Email = regVM.Email,
                     PasswordHash = passHash
                 }))

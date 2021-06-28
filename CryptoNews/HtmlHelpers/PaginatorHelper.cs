@@ -12,8 +12,10 @@ namespace CryptoNews.HtmlHelpers
                             PageInfo info, Func<int, string> pageUrl)
         {
             var strB = new StringBuilder();
-            
-            for(int i=1; i <= info.CountPages; i++)
+            strB.Append("<button @click = \"prev\" >Prev</button>");
+
+
+            for (int i=1; i <= info.CountPages; i++)
             {
                 var str = $"<a href={pageUrl(i)} class=\"btn btn-default\"> {i.ToString()} </a>";
 
@@ -36,7 +38,10 @@ namespace CryptoNews.HtmlHelpers
                 //strB.Append(tagB);
                 strB.Append(str);
             }
+            strB.Append("<button @click = \"next\" >Next</button>");
             return new HtmlString(strB.ToString());
         }
     }
 }
+
+

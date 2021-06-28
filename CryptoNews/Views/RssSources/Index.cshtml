@@ -33,7 +33,8 @@
             <td>
                 <a asp-action="Edit" asp-route-id="@source.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@source.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@source.Id">Delete</a>
+                <a asp-action="Delete" asp-route-id="@source.Id">Delete</a> |
+                <a asp-controller="RssSources" asp-action="News" asp-route-sourceid="@source.Id">News</a>
             </td>
         </tr>
 }

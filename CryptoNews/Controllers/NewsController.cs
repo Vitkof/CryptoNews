@@ -41,9 +41,16 @@ namespace CryptoNews.Controllers
             {
                 return NotFound();
             }*/
-
-            model = (await _newsService.GetNewsBySourceId(sourceId)).ToList();
-            var itemsOnPage = 20;
+            if(sourceId is null)
+            {
+                model = (await _newsService.GetAllNews()).ToList();
+            }
+            else
+            {
+                model = (await _newsService.GetNewsBySourceId(sourceId)).ToList();
+            }
+            
+            var itemsOnPage = 12;
             var newsPerPages = model.Skip((pageNumber - 1) * itemsOnPage).Take(itemsOnPage);
             PageInfo info = new PageInfo()
             {
@@ -122,6 +129,7 @@ namespace CryptoNews.Controllers
         }
 
         // GET: News/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -143,6 +151,7 @@ namespace CryptoNews.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,Body,PubDate,Rating,Url,RssSourceId")] NewsDto @news)
         {
             if (id != @news.Id)
@@ -174,6 +183,7 @@ namespace CryptoNews.Controllers
         }
 
         // GET: News/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -194,6 +204,7 @@ namespace CryptoNews.Controllers
         // POST: News/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var @news = _newsService.GetNewsById(id);//_context.News.FindAsync(id);

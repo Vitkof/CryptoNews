@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 namespace CryptoNews.Services.Implement
 {
-    public class BitcoinNewsParserService : CommonParserActions, IWebPageParser
+    public class CointelegraphParserService : CommonParserActions, IWebPageParser
     {
         public async Task<string> ParseBody(string url)
         {

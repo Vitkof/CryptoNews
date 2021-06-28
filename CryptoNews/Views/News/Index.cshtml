@@ -2,17 +2,15 @@
 @model CryptoNews.Models.ViewModels.NewsListWithPaginator
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "All News";
 }
 
 <p>
     <a asp-controller="News" asp-action="Aggregate">Aggregate</a>
 </p>
-<p>
-    <a asp-controller="News" asp-action="DeleteAll">Delete All</a>
-</p>
 
-<h1>Index</h1>
+
+<h1>All News</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -29,10 +27,30 @@
 
 <div class="btn-group">
     @Html.CreatePaginator(Model.PageInfo, i => Url.Action("Index", new { 
-    sourceId = Model.NewsPerPages.FirstOrDefault().RssSourceId, 
+    @*sourceId = Model.NewsPerPages.FirstOrDefault().RssSourceId,*@ 
     pageNumber = i 
 }))
 </div>
     
-<pag source-id="@Model.NewsPerPages.FirstOrDefault().RssSourceId" page-info="Model.PageInfo" page-action="Index" ></pag>
+
+<script>
+    export default {
+
+        methods: {// функций на страницу
+            prev() {
+                const page = @Model.PageInfo.PageNumber;
+                if (page > 0) {
+                    let num = page - 1;
+                    Response.Redirect("~/News/Index/"+num);
+            },
+            next() {
+                const page = @Model.PageInfo.PageNumber;
+                    if (page < @Model.PageInfo.CountPages) {
+                        let num = page + 1;
+                        Response.Redirect("~/News/Index/"+num);
+                    }                   
+            },
+        },
+    }
+</script>
     

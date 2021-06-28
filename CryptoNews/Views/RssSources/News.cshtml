@@ -1,0 +1,26 @@
+﻿@using CryptoNews.HtmlHelpers
+@model CryptoNews.Models.ViewModels.NewsListWithPaginator
+
+@{
+    ViewData["Title"] = "NewsFromConcreteRSS";
+}
+
+
+
+<h1></h1>
+
+
+
+<div class="row">
+    @foreach (var item in Model.NewsPerPages)
+    {
+        await Html.RenderPartialAsync("PreviewNews", item);
+    }
+</div>
+
+
+<div id="pag_rssnews" class="btn-group">
+    <pag source-id="@Model.NewsPerPages.FirstOrDefault().RssSourceId" page-info="Model.PageInfo" page-action="News"></pag>
+
+</div>
+

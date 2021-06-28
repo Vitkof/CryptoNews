@@ -5,12 +5,28 @@
 <form>
     <input type="hidden" id="newsId" name="newsId" value="@Model.NewsId" />
 
-    <div class="mb-3">
+    <div id="mb-3" class="mb-3">
+        <h2></h2>
         <label for="commText" class="form-label">Your comment:</label>
-        <textarea name="commText" maxlength="2000" placeholder="What do you think about it?" class="form-control" id="commText" rows="3"></textarea>
+        <textarea name="commText" maxlength="1000" placeholder="What do you think about it?" class="form-control" id="commText" rows="3"
+                  onkeyup="counting('this.value')"></textarea>
+        @*<p>Entered <input id="count"> letters</p>*@
+
     </div>
 
     <div class="col-sm-12">
         <button class="btn btn-primary write-comment-btn" id="send-comment">Send</button>
     </div>
 </form>
+
+@section Scripts
+{
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script>
+        $(function counting(tex) {
+            $('h2').html(tex);
+        });
+        $(document).ready(counting);
+    </script>
+    @*<script src="~/js/charCounter.js"></script>*@
+}

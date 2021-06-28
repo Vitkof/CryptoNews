@@ -6,16 +6,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CryptoNews.DAL.Entities;
+using CryptoNews.Core.DTO;
+using CryptoNews.Models.ViewModels;
+using CryptoNews.Models;
+using CryptoNews.Core.IServices;
 
 namespace CryptoNews.Controllers
 {
     public class RssSourcesController : Controller
     {
         private readonly CryptoNewsContext _context;
+        private readonly INewsService _newsService;
 
-        public RssSourcesController(CryptoNewsContext context)
+        public RssSourcesController(CryptoNewsContext context,
+            INewsService newsSvc)
         {
             _context = context;
+            _newsService = newsSvc;
         }
 
         // GET: RssSources
@@ -148,6 +155,33 @@ namespace CryptoNews.Controllers
         private bool RssSourceExists(Guid id)
         {
             return _context.RssSources.Any(e => e.Id == id);
+        }
+
+        // GET: RssSources/News/
+        public async Task<IActionResult> News(Guid sourceId, int pageNumber = 1)
+        {
+            List<NewsDto> model;
+
+            model = (await _newsService.GetNewsBySourceId(sourceId)).ToList();
+
+
+            var itemsOnPage = 12;
+            var newsPerPages = model.Skip((pageNumber - 1) * itemsOnPage).Take(itemsOnPage);
+            PageInfo info = new PageInfo()
+            {
+                PageNumber = pageNumber,
+                ItemsOnPage = itemsOnPage,
+                CountItems = model.Count
+            };
+
+            var res = new NewsListWithPaginator()
+            {
+                NewsPerPages = newsPerPages,
+                PageInfo = info,
+                IsAdmin = false
+            };
+
+            return View(res);
         }
     }
 }

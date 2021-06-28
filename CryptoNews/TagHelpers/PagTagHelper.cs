@@ -58,9 +58,11 @@ namespace CryptoNews.TagHelpers
             }
             else
             {
-                if ((Math.Abs(i - pi.PageNumber) > 2) && i != 0 && i != pi.CountPages)
+                if ((Math.Abs(i - pi.PageNumber) > 2) 
+                    && i != 0 && i != pi.CountPages)
                     anchor = "...";
-                else anchor = i.ToString();
+
+                else anchor = i.ToString()+" ";
 
             }
             return anchor;
