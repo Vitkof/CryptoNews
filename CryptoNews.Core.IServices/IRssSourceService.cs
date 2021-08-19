@@ -9,7 +9,7 @@ namespace CryptoNews.Core.IServices
     public interface IRssSourceService
     {
         Task<IEnumerable<RssSourceDto>> GetAllRssSources();
-        Task<RssSourceDto> GetRssSourceById(Guid id);
+        RssSourceDto GetRssSourceById(Guid id);
         //Task<IEnumerable<RssSourceDto>> GetRssSourceBySourceId(Guid? id);
         Task<NewsWithRssSourceNameDto> GetNewsWithRssSourceNameById(Guid id);
 

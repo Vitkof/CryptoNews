@@ -10,7 +10,8 @@ namespace CryptoNews.Services.Implement.Mapper
         {
             CreateMap<Comment, CommentDto>();
             CreateMap<CommentDto, Comment>();
-
+            CreateMap<RssSource, RssSourceDto>();
+            CreateMap<RssSourceDto, RssSource>();
         }
     }
 }

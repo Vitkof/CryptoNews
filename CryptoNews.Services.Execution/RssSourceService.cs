@@ -9,12 +9,14 @@ using CryptoNews.DAL.Repositories;
 using CryptoNews.DAL.Entities;
 using CryptoNews.DAL.IRepositories;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace CryptoNews.Services.Implement
 {
     public class RssSourceService : IRssSourceService
     {
         private readonly IUnitOfWork _unit;
+        private readonly IMapper _mapper;
 
         public RssSourceService(IUnitOfWork unitOfWork)
         {
@@ -88,9 +90,9 @@ namespace CryptoNews.Services.Implement
             throw new NotImplementedException();
         }
 
-        public Task<RssSourceDto> GetRssSourceById(Guid id)
+        public RssSourceDto GetRssSourceById(Guid id)
         {
-            throw new NotImplementedException();
+            return _mapper.Map<RssSourceDto>(_unit.RssSources.ReadById(id));
         }
     }
 }
