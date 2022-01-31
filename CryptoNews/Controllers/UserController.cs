@@ -19,7 +19,9 @@ namespace CryptoNews.Controllers
         }
 
         [HttpGet]
-        public IList<User> Get()
+        public IList<User> Get() =>
+            GetInternal();
+        private IList<User> GetInternal()
         {
             return (this.cryptoNContext.Users.ToList());
         }

@@ -32,7 +32,9 @@ namespace CryptoNews.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterVM regVM)
+        public Task<IActionResult> Register(RegisterVM vm) =>
+            RegisterInternal(vm);
+        private async Task<IActionResult> RegisterInternal(RegisterVM regVM)
         {
             if (ModelState.IsValid)
             {
@@ -87,7 +89,9 @@ namespace CryptoNews.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Logout()
+        public Task<IActionResult> LogOut() =>
+            LogoutInternal();
+        private async Task<IActionResult> LogoutInternal()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Account");
@@ -121,7 +125,9 @@ namespace CryptoNews.Controllers
         }
 
         [HttpGet]
-        public IActionResult Settings()
+        public IActionResult Settings() =>
+            SettingsInternal();
+        private IActionResult SettingsInternal()
         {
             var user = HttpContext.User.Claims.FirstOrDefault(cl => 
             cl.Type.Equals(ClaimsIdentity.DefaultNameClaimType));

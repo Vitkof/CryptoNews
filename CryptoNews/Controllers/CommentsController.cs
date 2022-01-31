@@ -22,7 +22,10 @@ namespace CryptoNews.Controllers
             _commentService = commentSvc;
             _userService = userSvc;
         }
-        public IActionResult List(Guid newsId)
+
+        public IActionResult List(Guid newsId) =>
+            ListInternal(newsId);
+        private IActionResult ListInternal(Guid newsId)
         {
             var comms = _commentService.GetCommentsByNewsId(newsId);
             return View(new CommentsListVM
@@ -34,9 +37,12 @@ namespace CryptoNews.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CommentCreateVM vm)
+        public Task<IActionResult> Create([FromBody] CommentCreateVM vm) =>
+            CreateInternal(vm);
+        private async Task<IActionResult> CreateInternal(CommentCreateVM vm)
         {
-            var user = HttpContext.User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimsIdentity.DefaultNameClaimType));
+            var user = HttpContext.User.Claims.FirstOrDefault(c => 
+                        c.Type.Equals(ClaimsIdentity.DefaultNameClaimType));
             var userEmail = user?.Value;
             var userId = _userService.GetUserByEmail(userEmail).Id;
 

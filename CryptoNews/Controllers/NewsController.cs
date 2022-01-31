@@ -34,7 +34,9 @@ namespace CryptoNews.Controllers
         }
 
         // GET: News/
-        public async Task<IActionResult> Index(Guid? sourceId, int pageNumber=1)
+        public Task<IActionResult> Index(Guid? sourceId, int pageNumber = 1) =>
+            GetIndexInternal(sourceId, pageNumber);
+        private async Task<IActionResult> GetIndexInternal(Guid? sourceId, int pageNumber)
         {
             List<NewsDto> model;
             /*if (sourceId == null)
@@ -70,7 +72,9 @@ namespace CryptoNews.Controllers
         }
 
         // GET: News/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public Task<IActionResult> Details(Guid? id) =>
+            GetDetailsInternal(id);
+        private async Task<IActionResult> GetDetailsInternal(Guid? id)
         {
             if (id == null)
             {

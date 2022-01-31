@@ -26,13 +26,17 @@ namespace CryptoNews.Controllers
         }
 
         // GET: RssSources
-        public async Task<IActionResult> Index()
+        public Task<IActionResult> Index() =>
+            IndexInternal();
+        private async Task<IActionResult> IndexInternal()
         {
             return View(await _context.RssSources.ToListAsync());
         }
 
         // GET: RssSources/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public Task<IActionResult> Details(Guid? id) =>
+            DetailsInternal(id);
+        private async Task<IActionResult> DetailsInternal(Guid? id)
         {
             if (id == null)
             {
@@ -124,7 +128,9 @@ namespace CryptoNews.Controllers
         }
 
         // GET: RssSources/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public Task<IActionResult> Delete(Guid? id) =>
+            DeleteInternal(id);
+        private async Task<IActionResult> DeleteInternal(Guid? id)
         {
             if (id == null)
             {
