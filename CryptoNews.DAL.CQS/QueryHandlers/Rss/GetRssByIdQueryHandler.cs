@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using CryptoNews.Core.DTO;
-using CryptoNews.DAL.CQS.Queries;
+using CryptoNews.DAL.CQS.Queries.Rss;
 using CryptoNews.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CryptoNews.DAL.CQS.QueryHandlers
@@ -24,9 +25,11 @@ namespace CryptoNews.DAL.CQS.QueryHandlers
             //_decor = decorated;
         }
 
-        public async Task<RssSourceDto> Handle(GetRssByIdQuery query)
+        public async Task<RssSourceDto> Handle(GetRssByIdQuery query, CancellationToken token)
         {
-            return _mapper.Map<RssSourceDto>(await _context.RssSources.FirstOrDefaultAsync(src => src.Id.Equals(query.Id)));
+            return 
+                _mapper.Map<RssSourceDto>(await _context.RssSources
+                .FirstOrDefaultAsync(src => src.Id.Equals(query.Id), token));
         }
     }
 }
