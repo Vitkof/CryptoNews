@@ -1,30 +1,35 @@
 ﻿using CryptoNews.DAL.CQS.Queries;
 using CryptoNews.DAL.CQS.QueryHandlers;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Web.Http.Dependencies;
 
 namespace CryptoNews.DAL.CQS
 {
     public class QueryDispatcher : IQueryDispatcher
     {
-        private readonly IDependencyResolver _resolver;
+        private readonly IServiceProvider _serviceProvider;
 
-        public QueryDispatcher(IDependencyResolver resolver)
+        public QueryDispatcher(IServiceProvider svcProvider)
         {
-            _resolver = resolver;
+            _serviceProvider = svcProvider ??
+                throw new ArgumentNullException(null, "serviceProvider");
         }
-        /*
-        public IQueryHandler<TQ, TR> Dispatch(TQ query)
-        {
-            IOCContainer.GetByType()
-        }*/
 
-        public Task<TR> Handle<TQ, TR>(TQ query) where TQ : IQuery<TR>
-        {
-            if (query == null) throw new ArgumentNullException(nameof(query));
 
-            var handler = _resolver.Resolve<IQueryHandler<TQ, TR>>();
+        public Task<TR> Handle<TQ, TR>(TQ query, CancellationToken token) where TQ : IQuery<TR>
+        {
+            var handlerType = typeof(IQueryHandler<,>)
+                .MakeGenericType(query.GetType(), typeof(TR));
+            try
+            {
+                dynamic handler = _serviceProvider.GetService(handlerType);
+                return handler.Handler((dynamic)query, token);
+            }
+            catch (Exception ex)
+            {
+                throw new HandlerNotFoundException(ex);
+            }
         }
     }
 }

@@ -1,28 +1,26 @@
 ﻿using CryptoNews.DAL.CQS.Queries;
 using CryptoNews.DAL.CQS.QueryHandlers;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CryptoNews.DAL.CQS
 {
     public class QueryBus
     {
-        public object Resolve<THandler, TQuery, TResult>(TQuery query) 
-            where THandler : IQueryHandler<TQuery, TResult>, IQueryHandler, new()
-            where TResult : class
-            where TQuery : class
+        private readonly IMediator _mediator;
+        public QueryBus(IMediator mediator)
         {
-            return new THandler().Handle(query);
+            _mediator = mediator;
         }
-        /*
-        public object Resolve<T, TQuery>(TQuery query)
-            where T : IQueryHandler<TQuery, object>, new()
-            where TQuery : class, IQuery<T>
+
+        public async Task<TResponse> Send<TResponse>(IRequest<TResponse> command, CancellationToken token)
         {
-            return new T().Handle(query);
-        }*/
+            return await _mediator.Send(command, token);
+        }
     }
 }
