@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CryptoNews.Core.IServices\CryptoNews.Core.IServices.csproj" />
+    <ProjectReference Include="..\CryptoNews.DAL.CQS\CryptoNews.DAL.CQS.csproj" />
     <ProjectReference Include="..\CryptoNews.DAL.IRepositories\CryptoNews.DAL.IRepositories.csproj" />
     <ProjectReference Include="..\CryptoNews.DAL.Repositories\CryptoNews.DAL.Repositories.csproj" />
   </ItemGroup>

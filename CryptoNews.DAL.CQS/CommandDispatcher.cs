@@ -19,13 +19,16 @@ namespace CryptoNews.DAL.CQS
         public CommandDispatcher(IServiceProvider svcProvider)
         {
             _serviceProvider = svcProvider ??
-                throw new ArgumentNullException(null, "serviceProvider");
+                throw new ArgumentNullException(nameof(svcProvider));
         }
 
 
         public void Handle<TCmd>(TCmd command, CancellationToken token)
             where TCmd : ICommand
         {
+            if (command == null)
+                throw new ArgumentNullException(nameof(command));
+
             var handlerType = typeof(ICommandHandler<>)
                 .MakeGenericType(command.GetType());
 

@@ -1,6 +1,7 @@
 using CryptoNews.DAL.CQS.Queries;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SimpleInjector;
+using System;
 using System.Threading;
 
 namespace CryptoNews.DAL.CQS.Test
@@ -10,13 +11,24 @@ namespace CryptoNews.DAL.CQS.Test
     {
         [TestMethod]
         [ExpectedException(typeof(HandlerNotFoundException))]
-        public void HandlerNotFoundExceptionTest()
+        public async void HandlerNotFoundExceptionTest()
         {
             var container = new Container();
             container.Register<IQueryDispatcher>(() => new QueryDispatcher(container));
 
             var queryDispatcher = container.GetInstance<IQueryDispatcher>();
-            queryDispatcher.Handle<NewsQuery, News>(new NewsQuery(), new CancellationToken());
+            await queryDispatcher.HandleAsync<NewsQuery, News>(new NewsQuery(), new CancellationToken());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public async void ArgumentNullExceptionTest()
+        {
+            var container = new Container();
+            container.Register<IQueryDispatcher>(() => new QueryDispatcher(container));
+
+            var queryDispatcher = container.GetInstance<IQueryDispatcher>();
+            await queryDispatcher.HandleAsync<NewsQuery, News>(null, new CancellationToken());
         }
 
         class News { }

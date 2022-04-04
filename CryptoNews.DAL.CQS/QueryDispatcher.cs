@@ -13,23 +13,42 @@ namespace CryptoNews.DAL.CQS
         public QueryDispatcher(IServiceProvider svcProvider)
         {
             _serviceProvider = svcProvider ??
-                throw new ArgumentNullException(null, "serviceProvider");
+                throw new ArgumentNullException(nameof(svcProvider));
         }
 
 
-        public Task<TR> Handle<TQ, TR>(TQ query, CancellationToken token) where TQ : IQuery<TR>
+        public async Task<TR> HandleAsync<TQ, TR>(TQ query, CancellationToken token = default) where TQ : IQuery<TR>
         {
+            var handler = GetHandler<IQueryHandler<TQ, TR>, TQ>(query);
+
+            return await handler.Handle(query, token);
+        }
+
+        public TR Dispatch<TQ, TR>(TQ query, CancellationToken token = default) where TQ : IQuery<TR>
+        {
+            var handler = GetHandler<IQueryHandler<TQ, TR>, TQ>(query);
+
+            return handler.Handle(query,token).Result;
+        }
+
+        #region private
+        private THandler GetHandler<THandler, TQuery>(TQuery query)
+        {
+            if (query == null)
+                throw new ArgumentNullException(nameof(query));
+
             var handlerType = typeof(IQueryHandler<,>)
-                .MakeGenericType(query.GetType(), typeof(TR));
+                .MakeGenericType(query.GetType(), typeof(THandler));
             try
             {
                 dynamic handler = _serviceProvider.GetService(handlerType);
-                return handler.Handler((dynamic)query, token);
+                return handler;
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 throw new HandlerNotFoundException(ex);
             }
         }
+        #endregion
     }
 }
