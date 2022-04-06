@@ -1,0 +1,14 @@
+﻿@model CustomErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="col-12 text-center">
+    <h2 class="text-danger" style="color:black;">Oops...! Error. Something went wrong.</h2>
+    <h3>Please, click on the link <a asp-action="Index">main</a> page, or contact the developer, to fix the error as soon as possible.</h3>
+    <div>
+        <a asp-action="Index">
+            <img src="~/img/error.png" alt="Error" class="img-fluid">
+        </a>
+    </div><br /><br /><br />
+</div>

@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using CryptoNews.DAL.Entities;
 using CryptoNews.DAL.IRepositories;
 using CryptoNews.DAL.Repositories;
+using CryptoNews.Filters;
 using CryptoNews.Core.IServices;
 using CryptoNews.Services.Implement;
 using CryptoNews.Policies;
@@ -39,7 +40,16 @@ namespace CryptoNews
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            #region Filters
+            services.AddScoped<CustomExceptionFilterAttribute>();
+            services.AddControllersWithViews().AddMvcOptions(options =>
+            {
+                options.MaxModelValidationErrors = 42;
+                options.Filters.Add(typeof(CustomExceptionFilterAttribute));
+                options.Filters.Add(new YandexFilterAttribute(8, 22));
+            });
+            #endregion
+
             services.AddSession();
 
             string connect = Configuration.GetConnectionString("MyConnect");
