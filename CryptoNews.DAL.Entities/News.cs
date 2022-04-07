@@ -4,9 +4,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CryptoNews.DAL.Entities
 {
-    public class News : IBaseEntity
+    public class News : BaseEntity
     {
-        public Guid Id { get; set; }
         [StringLength(150, MinimumLength = 3)]
         [Required(ErrorMessage ="Title is required.")]
         public string Title { get; set; }

@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 namespace CryptoNews.DAL.Entities
 {
     public interface IBaseEntity
+    { }
+
+    public interface IBaseEntity<T> : IBaseEntity
     {
-        public Guid Id { get; set; }
+        T Id { get; set; } 
     }
 }

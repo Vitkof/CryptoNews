@@ -3,9 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CryptoNews.Core.DTO
 {
-    public class NewsDto
+    public class NewsDto : Dto
     {
-        public Guid Id { get; set; }
         [StringLength(150, MinimumLength = 3), Required]
         public string Title { get; set; }
         public string Description { get; set; }

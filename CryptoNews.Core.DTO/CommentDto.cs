@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace CryptoNews.Core.DTO
 {
-    public class CommentDto
+    public class CommentDto : Dto
     {
-        public Guid Id { get; set; }
         [StringLength(1000)]
         public string Text { get; set; }
 
@@ -21,6 +20,5 @@ namespace CryptoNews.Core.DTO
         public Guid NewsId { get; set; }
         public Guid UserId { get; set; }
         public Guid? ParentId { get; set; }
-
     }
 }

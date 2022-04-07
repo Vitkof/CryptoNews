@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace CryptoNews.Core.DTO
 {
-    public class NewsWithRssSourceNameDto
+    public class NewsWithRssSourceNameDto : Dto
     {
-        public Guid Id { get; set; }
         [StringLength(150, MinimumLength = 3), Required]
         public string Title { get; set; }
         public string Description { get; set; }

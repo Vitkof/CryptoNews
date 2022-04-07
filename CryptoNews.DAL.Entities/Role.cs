@@ -4,10 +4,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CryptoNews.DAL.Entities
 {
-    public class Role : IBaseEntity
+    public class Role : BaseEntity
     {
-        public Guid Id { get; set; }
-
         [StringLength(50, MinimumLength =2), Required]
         public string Name { get; set; }
         
