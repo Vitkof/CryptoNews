@@ -15,10 +15,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CryptoNews.DAL.CQS.QueryHandlers;
+using System.Reflection;
 
 namespace CryptoNews.WebAPI
 {
@@ -68,7 +71,7 @@ namespace CryptoNews.WebAPI
             mc.AddProfile(new MappingProfile()));
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
-
+            services.AddMediatR(typeof(GetRssByIdQueryHandler).GetTypeInfo().Assembly);
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

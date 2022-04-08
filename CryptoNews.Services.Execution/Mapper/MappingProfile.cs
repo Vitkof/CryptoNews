@@ -12,6 +12,12 @@ namespace CryptoNews.Services.Implement.Mapper
             CreateMap<CommentDto, Comment>();
             CreateMap<RssSource, RssSourceDto>();
             CreateMap<RssSourceDto, RssSource>();
+
+            CreateMap<News, NewsDto>().ReverseMap();
+            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<Role, RoleDto>().ReverseMap();
+            CreateMap<RefreshToken, RefreshTokenDto>()
+                .ReverseMap();
         }
     }
 }
