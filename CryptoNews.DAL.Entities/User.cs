@@ -18,11 +18,15 @@ namespace CryptoNews.DAL.Entities
         [StringLength(200)]
         public string ShortDescription { get; set; }
 
+        [Url]
+        public string AvatarUrl { get; set; }
+
         public GenderType Gender { get; set; }
 
         [DataType(DataType.DateTime)]
         public DateTime RegisterTime { get; set; }
         public DateTimeOffset? LastLoginDate { get; set; }
+        public DateTimeOffset? LastActivityDate { get; set; }
 
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
@@ -45,6 +49,9 @@ namespace CryptoNews.DAL.Entities
         Male = 1,
 
         [Display(Name = "F")]
-        Female = 2
+        Female = 2,
+
+        [Display(Name = "T")]
+        Trans = 3
     }
 }

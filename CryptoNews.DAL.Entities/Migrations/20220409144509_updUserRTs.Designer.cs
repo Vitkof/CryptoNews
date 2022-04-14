@@ -4,14 +4,16 @@ using CryptoNews.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CryptoNews.DAL.Entities.Migrations
 {
     [DbContext(typeof(CryptoNewsContext))]
-    partial class CryptoNewsContextModelSnapshot : ModelSnapshot
+    [Migration("20220409144509_updUserRTs")]
+    partial class updUserRTs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -160,9 +162,6 @@ namespace CryptoNews.DAL.Entities.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("AvatarUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
@@ -173,9 +172,6 @@ namespace CryptoNews.DAL.Entities.Migrations
 
                     b.Property<int>("Gender")
                         .HasColumnType("int");
-
-                    b.Property<DateTimeOffset?>("LastActivityDate")
-                        .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset?>("LastLoginDate")
                         .HasColumnType("datetimeoffset");
