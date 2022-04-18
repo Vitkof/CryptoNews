@@ -5,6 +5,7 @@ using System;
 
 namespace CryptoNews.Filters
 {
+    [AttributeUsage(AttributeTargets.All)]
     public class YandexFilterAttribute : Attribute, IResourceFilter
     {
         private readonly int _startHours;

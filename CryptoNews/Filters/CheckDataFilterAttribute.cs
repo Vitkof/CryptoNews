@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace CryptoNews.Filters
 {
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
     public class CheckDataFilterAttribute : Attribute, IAsyncActionFilter
     {
         private readonly INewsService _newsService;

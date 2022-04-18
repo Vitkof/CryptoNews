@@ -14,6 +14,7 @@ using Serilog;
 using CryptoNews.Services.Implement;
 using Microsoft.AspNetCore.Authorization;
 using NewsAggregator.Models.ViewModels;
+using CryptoNews.Filters;
 
 namespace CryptoNews.Controllers
 {
@@ -39,10 +40,7 @@ namespace CryptoNews.Controllers
         private async Task<IActionResult> GetIndexInternal(Guid? sourceId, int pageNumber)
         {
             List<NewsDto> model;
-            /*if (sourceId == null)
-            {
-                return NotFound();
-            }*/
+
             if(sourceId is null)
             {
                 model = (await _newsService.GetAllNews()).ToList();
@@ -53,8 +51,9 @@ namespace CryptoNews.Controllers
             }
             
             var itemsOnPage = 12;
-            var newsPerPages = model.Skip((pageNumber - 1) * itemsOnPage).Take(itemsOnPage);
-            PageInfo info = new PageInfo()
+            var newsPerPages = model.Skip((pageNumber - 1) * itemsOnPage)
+                                    .Take(itemsOnPage);
+            PageInfo info = new()
             {
                 PageNumber = pageNumber,
                 ItemsOnPage = itemsOnPage,
@@ -72,9 +71,9 @@ namespace CryptoNews.Controllers
         }
 
         // GET: News/Details/5
-        public Task<IActionResult> Details(Guid? id) =>
+        public IActionResult Details(Guid? id) =>
             GetDetailsInternal(id);
-        private async Task<IActionResult> GetDetailsInternal(Guid? id)
+        private IActionResult GetDetailsInternal(Guid? id)
         {
             if (id == null)
             {
@@ -116,46 +115,31 @@ namespace CryptoNews.Controllers
         }
 
         // POST: News/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [NewsValidationFilter]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,Body,PubDate,Rating,Url,RssSourceId")] NewsDto @news)
         {
-            if (ModelState.IsValid)
-            {
-                @news.Id = Guid.NewGuid();
-                await _newsService.AddNews(@news);
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["RssSourceId"] = new SelectList(await _rssService.GetAllRssSources(), "Id", "Id", @news.RssSourceId);
-            return View(@news);
+            @news.Id = Guid.NewGuid();
+            await _newsService.AddNews(@news);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: News/Edit/5
         [Authorize(Roles = "Admin")]
+        [ServiceFilter(typeof(NewsProviderFilter))]
         public async Task<IActionResult> Edit(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var @news = _newsService.GetNewsById(id.Value); 
-            if (@news == null)
-            {
-                return NotFound();
-            }
+            NewsDto @news = (NewsDto)HttpContext.Items["news"];
             ViewData["RssSourceId"] = new SelectList(await _rssService.GetAllRssSources(), "Id", "Id", @news.RssSourceId);
             return View(@news);
         }
 
         // POST: News/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
+        [NewsValidationFilter]
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,Body,PubDate,Rating,Url,RssSourceId")] NewsDto @news)
         {
             if (id != @news.Id)
@@ -163,45 +147,30 @@ namespace CryptoNews.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    await _newsService.EditNews(@news);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!NewsExists(@news.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _newsService.EditNews(@news);
             }
-            ViewData["RssSourceId"] = new SelectList(await _rssService.GetAllRssSources(), "Id", "Id", @news.RssSourceId);
-            return View(@news);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!NewsExists(@news.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: News/Delete/5
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Delete(Guid? id)
+        [ServiceFilter(typeof(NewsProviderFilter))]
+        public IActionResult Delete(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var @news =  _newsService.GetNewsById(id.Value);
-
-            if (@news == null)
-            {
-                return NotFound();
-            }
-
+            NewsDto @news = (NewsDto)HttpContext.Items["news"];
             return View(@news);
         }
 
@@ -211,7 +180,7 @@ namespace CryptoNews.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var @news = _newsService.GetNewsById(id);//_context.News.FindAsync(id);
+            var @news = _newsService.GetNewsById(id);
             await _newsService.DeleteNews(@news);
             return RedirectToAction(nameof(Index));
         }
@@ -223,16 +192,17 @@ namespace CryptoNews.Controllers
 
 
 
-        [HttpPost]
+        [HttpGet]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteAll(CreateNewsVM source)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteAll()
         {
-            var all = _newsService.GetAllNews();//_context.News.FindAsync(id);
+            var all = _newsService.GetAllNews();
             await _newsService.DeleteRangeNews((IEnumerable<NewsDto>)all);
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Aggregate()
+        public IActionResult Aggregate()
         {
             return View();
         }

@@ -9,8 +9,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-//using Pomelo.EntityFrameworkCore.MySql.Storage;
-//using Pomelo.EntityFrameworkCore.MySql.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +45,9 @@ namespace CryptoNews
                 options.MaxModelValidationErrors = 42;
                 options.Filters.Add(typeof(CustomExceptionFilterAttribute));
                 options.Filters.Add(new YandexFilterAttribute(8, 22));
+                options.Filters.Add<LoggingFilter>();
             });
+            services.AddSingleton<NewsProviderFilter>();
             #endregion
 
             services.AddSession();
@@ -90,11 +90,12 @@ namespace CryptoNews
                 {
                     opt.LoginPath = new PathString("/Account/Login");
                     opt.AccessDeniedPath = new PathString("/Account/Login");
-                });                 
+                });
 
-            services.AddAuthorization(opt => opt.AddPolicy("18+",policy=> policy.Requirements.Add(new MinimalAgeReq(18))));
+            services.AddAuthorization(opt => opt.AddPolicy("18+", policy =>
+                                    policy.Requirements.Add(new MinimalAgeReq(18))));
             services.AddSingleton<IAuthorizationHandler, MinimalAgeHandler>();
-            
+
             services.AddMemoryCache();
         }
 

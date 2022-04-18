@@ -6,6 +6,7 @@ using System;
 
 namespace CryptoNews.Filters
 {
+    [AttributeUsage(AttributeTargets.All)]
     public class CustomExceptionFilterAttribute : Attribute, IExceptionFilter
     {
         public void OnException(ExceptionContext context)
