@@ -45,7 +45,10 @@ namespace CryptoNews.Controllers
                     FirstName = regVM.FirstName,
                     LastName = regVM.LastName,
                     Email = regVM.Email,
-                    PasswordHash = passHash
+                    PasswordHash = passHash,
+                    PhoneNumber = regVM.PhoneNumber,
+                    Gender = regVM.Gender,
+                    ShortDescription = regVM.ShortDescription
                 }))
                 {
                     return RedirectToAction("Index", "Home");

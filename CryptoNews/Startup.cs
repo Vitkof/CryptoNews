@@ -47,7 +47,7 @@ namespace CryptoNews
                 options.Filters.Add(new YandexFilterAttribute(8, 22));
                 options.Filters.Add<LoggingFilter>();
             });
-            services.AddSingleton<NewsProviderFilter>();
+            services.AddScoped<NewsProviderFilter>();
             #endregion
 
             services.AddSession();

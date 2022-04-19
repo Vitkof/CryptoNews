@@ -1,0 +1,82 @@
+﻿/* Registration-style
+-------------------------------------------------- */
+
+.form {
+    display: inline-block
+}
+
+.form-group input {
+    float: right;
+}
+
+.field-validation-error {
+    font-size: larger;
+    font-style: italic;
+    font-family: sans-serif;
+    line-height: 8px;
+}
+
+.pass-confirm {
+    line-height: 1;
+}
+
+.phone-num {
+    margin-right:5px;
+}
+
+#gender_radio {
+    float:right; 
+    display:flex
+}
+
+#gender_radio div {
+    margin-left: 5px
+}
+
+#gender_radio input{
+    float:left;
+    margin:5px 2px;
+    width:15px;
+    height:15px;
+}
+
+.p7v {
+    background: 0 0;
+    border: 1px solid #dbdbdb;
+    border: 1px solid rgba(var(--ca6,219,219,219),1);
+    border-radius: 7px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    color: #262626;
+    color: rgba(var(--i1d,38,38,38),1);
+    -webkit-box-flex: 0;
+    -webkit-flex: 0 1 355px;
+    -ms-flex: 0 1 355px;
+    flex: 0 1 355px;
+    font-size: 16px;
+    padding: 6px 10px;
+    resize: vertical;
+}
+
+#counter-box {
+    position: relative;
+    display: grid;
+    margin-top:-0.5rem;
+}
+
+#counter-text {
+    position: absolute;
+    right: 10px;
+    bottom: 50px;
+    color:cornflowerblue
+}
+
+.counter-text__current{
+    font-family:'Times New Roman', Times, serif;
+    font-size:12px;
+    font-weight:600
+}
+.counter-text__total {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 11px;
+}
