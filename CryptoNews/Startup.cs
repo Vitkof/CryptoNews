@@ -50,7 +50,15 @@ namespace CryptoNews
             services.AddScoped<NewsProviderFilter>();
             #endregion
 
-            services.AddSession();
+            #region Session
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(20);
+                options.Cookie.HttpOnly = true;
+            });
+            #endregion
 
             string connect = Configuration.GetConnectionString("MyConnect");
             /*ServerVersion version = ServerVersion.AutoDetect(connect);*/
@@ -95,7 +103,7 @@ namespace CryptoNews
             services.AddAuthorization(opt => opt.AddPolicy("18+", policy =>
                                     policy.Requirements.Add(new MinimalAgeReq(18))));
             services.AddSingleton<IAuthorizationHandler, MinimalAgeHandler>();
-
+            
             services.AddMemoryCache();
         }
 
@@ -117,9 +125,10 @@ namespace CryptoNews
 
             app.UseRouting();
 
+            app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();
-
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

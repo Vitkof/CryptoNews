@@ -31,6 +31,8 @@ a {
 -------------------------------------------------- */
 html {
   font-size: 14px;
+  position: relative;
+  min-height: 100%;
 }
 @media (min-width: 768px) {
   html {
@@ -64,13 +66,9 @@ h2 {
     margin-inline-end: 0px;
     font-weight: bold;
 }
+
 /* Sticky footer styles
 -------------------------------------------------- */
-html {
-  position: relative;
-  min-height: 100%;
-}
-
 body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
@@ -173,4 +171,62 @@ body {
 }
 .flyer__footer a {
     font-weight: 700;
+}
+
+
+/* Login-style
+-------------------------------------------------- */
+.login-center-h {
+    margin: auto;
+    width: 250px;
+}
+
+.login-box {
+    width:280px
+}
+    .login-box .form-group-lg input {
+        width: 160px;
+        float: right
+    }
+
+    .login-box .form-group-lg{
+        margin-bottom: 10px;
+    }
+
+    .login-box .form-group-sm {
+        margin-top: 10px;
+        float: right;
+    }
+
+    .login-box .field-validation-error {
+        margin-top: 1px;
+        font-size: large;
+        line-height: 11px;
+        display: block;
+    }
+
+.login-box .input-group input {
+    margin: 3px 0 3px 1px;
+    padding: .2rem .5rem;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+}
+
+.login-errors {
+    color: #cf114f;
+}
+
+#img-captcha {
+    cursor: pointer;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 3px 0 0 3px;
+}
+
+#CaptchaCode-error {
+    margin: 5px 0;
+}
+
+#login-footer{
+    margin-left: 23px;
 }

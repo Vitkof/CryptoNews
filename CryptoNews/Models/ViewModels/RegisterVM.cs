@@ -21,6 +21,7 @@ namespace CryptoNews.Models.ViewModels
         public string Email { get; set; }
 
         [Required(ErrorMessage = MSG)]
+        [StringLength(20, MinimumLength = 6)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 

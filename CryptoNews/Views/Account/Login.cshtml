@@ -1,33 +1,42 @@
 ﻿@model CryptoNews.Models.ViewModels.LoginVM
 
-<h2 class="flyer__title">Login</h2>
+<div class="login-center-h">
+    <h2 class="flyer__title">Login</h2>
+</div>
 
-<div class="flyer__box">
+<div class="flyer__box login-box">
     <div class="flyer__body">
-        <form asp-controller="Account" asp-action="Login" asp-antiforgery="true" method="post">
+        <form style="display:inline-block" asp-controller="Account" asp-action="Login" asp-antiforgery="true" method="post">
             <input type="hidden" asp-for="ReturnUrl">
-            <div class="validation" asp-validation-summary="ModelOnly"></div>
-            <div class="form-group">
+            <div class="form-group-lg">
                 <label asp-for="Email" class="control-label">Email</label>
                 <input asp-for="Email" type="text" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group-lg">
                 <label asp-for="Password" class="control-label">Password</label>
-                <input asp-for="Password" type="password" />
+                <input asp-for="Password" type="password"/>
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input id="spec-btn" type="submit" value="Log In" class="btn btn-info" />
+            <div class="validation login-errors" asp-validation-summary="ModelOnly"></div>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <img id="img-captcha" src="~/captcha-image" />
+                </div>
+                <input type="text" class="form-control" placeholder="Captcha" asp-for="CaptchaCode" maxlength="4" />
+                <span asp-validation-for="CaptchaCode" class="text-danger"></span>
+            </div>
+            <div class="form-group-sm">
+                <input type="submit" value="Log In" class="btn btn-info" />
             </div>
         </form>
     </div>
 </div>
 
 <div class="flyer__footer">
-    <p>
+    <p id="login-footer">
         <a href="/account/register">Register</a>
-        for those who are on the site for the first time
+        for those who are here for the first time
     </p>
 </div>
 
@@ -35,5 +44,4 @@
 {
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-    <script src="~/js/workWithDOM.js"></script>
 }

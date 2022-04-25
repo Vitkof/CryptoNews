@@ -24,6 +24,7 @@
             <div class="form-group">
                 <label asp-for="Password" class="control-label">Password*</label>
                 <input asp-for="Password" type="password" />
+                <small id="passwordHelpBlock" class="form-text text-muted">&ge; 6 symbols</small>
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="form-group" style="margin-bottom: 0.7rem;">
