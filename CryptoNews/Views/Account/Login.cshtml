@@ -21,8 +21,10 @@
             <div class="validation login-errors" asp-validation-summary="ModelOnly"></div>
             <div class="input-group">
                 <div class="input-group-prepend">
-                    <img id="img-captcha" src="~/captcha-image" />
+                    <img id="img-captcha" src="~/captcha-image"
+                            alt="click to change" />
                 </div>
+                <div id="hint-captcha"></div>
                 <input type="text" class="form-control" placeholder="Captcha" asp-for="CaptchaCode" maxlength="4" />
                 <span asp-validation-for="CaptchaCode" class="text-danger"></span>
             </div>
@@ -44,4 +46,5 @@
 {
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/js/captcha.js" defer></script>
 }

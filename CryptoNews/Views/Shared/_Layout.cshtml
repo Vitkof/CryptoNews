@@ -42,11 +42,26 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2021 - CryptoNews - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2022 - CryptoNews - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/profileSettings.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+
+            var isUserAuthenticated = '@User.Identity.IsAuthenticated';
+
+            if (isUserAuthenticated) {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("RegisterActivity", "Account")",
+                    data: { userName: '@User.Identity.Name' },
+                    cache: false
+                });
+            }
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

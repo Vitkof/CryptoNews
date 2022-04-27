@@ -9,7 +9,8 @@ a.navbar-brand {
   word-break: break-all;
 }
 
-/* Provide sufficient contrast against white background */
+/* Provide sufficient contrast against white background 
+-----------------------------------------------------------*/
 a {
     color: #cf114f;
     text-decoration: none;
@@ -221,6 +222,19 @@ body {
     margin: 0 !important;
     padding: 0 !important;
     border-radius: 3px 0 0 3px;
+}
+
+#hint-captcha {
+    z-index: 9999;
+    display: none;
+    position: absolute;
+    border: 1px solid #ccc;
+    padding: 0 5px;
+    background: yellow;
+    opacity: 0.6;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: bold;
 }
 
 #CaptchaCode-error {

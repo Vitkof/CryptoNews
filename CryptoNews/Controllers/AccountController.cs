@@ -127,6 +127,7 @@ namespace CryptoNews.Controllers
             LogoutInternal();
         private async Task<IActionResult> LogoutInternal()
         {
+            RegisterActivity();
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Account");
         }
@@ -168,6 +169,20 @@ namespace CryptoNews.Controllers
 
             if (user != null) return View("LogoutInfo");
             return View("LoginInfo");
+        }
+
+
+        public IActionResult RegisterActivity()
+        {
+            if ((Response.StatusCode == 200) && (Request.HttpContext.User.Identity.IsAuthenticated))
+            {
+                string email = HttpContext.User.Identity.Name;
+
+                var appUser = _userService.GetUserByEmail(email);
+                appUser.LastActivityDate = DateTime.Now;
+                _userService.EditUser(appUser);
+            }
+            return new EmptyResult();
         }
     }
 }
