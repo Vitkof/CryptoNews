@@ -56,16 +56,24 @@ namespace CryptoNews.Services.Implement.CqsServices
 
         public Task<int> EditUser(UserDto ud)
         {
-            throw new NotImplementedException();
+            try
+            {
+                throw new NotImplementedException();
+            }
+            catch(Exception ex)
+            {
+                Log.Error($"Error EditUser: {ex.Message}");
+                throw;
+            }
         }
 
-        public async Task<IEnumerable<UserDto>> FindUsers()
+        public IEnumerable<UserDto> GetUsers()
         {
             try
             {
                 var query = new GetAllUsersQuery();
-                var users = await _queryDispatcher
-                    .HandleAsync<GetAllUsersQuery, IEnumerable<UserDto>>(query, new CancellationToken());
+                var users = _queryDispatcher
+                    .Dispatch<GetAllUsersQuery, IEnumerable<UserDto>>(query, new CancellationToken());
                 return users;
             }
             catch(Exception ex)

@@ -12,7 +12,7 @@ namespace CryptoNews.Services.Implement
 {
     public class LentaParserService : CommonParserActions, IWebPageParser
     {
-        public async Task<string> ParseBody(string url)
+        public string ParseBody(string url)
         {
 
             HtmlWeb web = new HtmlWeb();
@@ -47,7 +47,7 @@ namespace CryptoNews.Services.Implement
             }                        
         }
 
-        public async Task<string> CleanDescription(string descript)
+        public string CleanDescription(string descript)
         {
             return descript;
         }

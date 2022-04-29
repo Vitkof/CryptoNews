@@ -77,5 +77,10 @@ namespace CryptoNews.Services.Implement.CqsServices
         {
             throw new NotImplementedException();
         }
+
+        public bool Exist(Guid id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using CryptoNews.DAL.Entities;
 using CryptoNews.DAL.IRepositories;
+using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,8 +41,21 @@ namespace CryptoNews.DAL.Repositories
 
         public async Task<int> SaveChangesAsync()
         {
-            return await _cont.SaveChangesAsync();
-        
+            try
+            {
+                return await _cont.SaveChangesAsync().ConfigureAwait(false);
+            }
+            catch(DbUpdateConcurrencyException ex)
+            {
+                ex.Entries.Single().Reload();
+                return await _cont.SaveChangesAsync().ConfigureAwait(false);
+            }
+            catch(DataException ex)
+            {
+                Log.Error($"SaveDB Error: {ex}");
+                Console.WriteLine(ex);
+                return 0;
+            }
         }
 
         private bool disposed = false;

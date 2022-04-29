@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CryptoNews.Core.IServices;
+using CryptoNews.Core.DTO;
 
 namespace CryptoNews.Controllers
 {
@@ -11,19 +13,19 @@ namespace CryptoNews.Controllers
     [Route("api/[controller]")]
     public class UserController : Controller
     {
-        private CryptoNewsContext cryptoNContext;
+        private readonly IUserService _userService;
 
-        public UserController(CryptoNewsContext context)
+        public UserController(IUserService userSvc)
         {
-            cryptoNContext = context;
+            _userService = userSvc;
         }
 
         [HttpGet]
-        public IList<User> Get() =>
+        public IList<UserDto> Get() =>
             GetInternal();
-        private IList<User> GetInternal()
+        private IList<UserDto> GetInternal()
         {
-            return (this.cryptoNContext.Users.ToList());
+            return _userService.GetUsers().ToList();
         }
 
         public IActionResult Index()

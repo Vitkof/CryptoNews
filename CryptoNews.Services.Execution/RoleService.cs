@@ -1,5 +1,6 @@
 ﻿using CryptoNews.Core.DTO;
 using CryptoNews.Core.IServices;
+using CryptoNews.DAL.Entities;
 using CryptoNews.DAL.IRepositories;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace CryptoNews.Services.Implement
             {
                 var user = _unit.Users.ReadById(userId);
                 user.RoleId = rd.Id;
-                await _unit.Users.Update(user);
+                _unit.Users.Update(user);
                 await _unit.SaveChangesAsync();
             }
         }
@@ -55,18 +56,21 @@ namespace CryptoNews.Services.Implement
         }
 
 
-        public Task<int> DeleteRole(RoleDto ud)
+        public async Task<int> DeleteRole(RoleDto rd)
         {
-            throw new NotImplementedException();
+            _unit.Roles.Delete(rd.Id);
+            return await _unit.SaveChangesAsync();
         }
 
-        public Task<int> EditRole(RoleDto ud)
+        public async Task<int> EditRole(RoleDto rd)
         {
-            throw new NotImplementedException();
+            var role = new Role
+            {
+                Id = rd.Id,
+                Name = rd.Name
+            };
+            _unit.Roles.Update(role);
+            return await _unit.SaveChangesAsync();
         }
-
-        
-
-        
     }
 }

@@ -18,12 +18,12 @@ namespace CryptoNews.Services.Implement
         private readonly IUnitOfWork _unit;
         private readonly IMapper _mapper;
 
-        public RssSourceService(IUnitOfWork unitOfWork)
+        public RssSourceService(IUnitOfWork unitOfWork, IMapper map)
         {
             _unit = unitOfWork;
+            _mapper = map;
         }
 
-        
 
         public async Task AddRssSource(RssSourceDto rd)
         {
@@ -33,7 +33,8 @@ namespace CryptoNews.Services.Implement
                 Name = rd.Name,
                 Url = rd.Url
             };
-            await _unit.RssSources.Create(rss);
+            await _unit.RssSources.CreateAsync(rss);
+            await _unit.SaveChangesAsync();
         }
 
         public async Task AddRangeRssSources(IEnumerable<RssSourceDto> rssDto)
@@ -44,14 +45,15 @@ namespace CryptoNews.Services.Implement
                 Name = rd.Name,
                 Url = rd.Url
             }).ToList();
-            await _unit.RssSources.CreateRange(range);
+            await _unit.RssSources.CreateRangeAsync(range);
+            await _unit.SaveChangesAsync();
         }
 
         public async Task<int> DeleteRssSource(RssSourceDto rd)
         {
             return await Task.Run(async () =>
             {
-                await _unit.RssSources.Delete(rd.Id);
+                _unit.RssSources.Delete(rd.Id);
                 return await _unit.SaveChangesAsync();
             });
         }
@@ -66,33 +68,33 @@ namespace CryptoNews.Services.Implement
                     Name = rd.Name,
                     Url = rd.Url
                 };
-                await _unit.RssSources.Update(rss);
+                _unit.RssSources.Update(rss);
                 return await _unit.SaveChangesAsync();
             });
         }
 
         public async Task<IEnumerable<RssSourceDto>> GetAllRssSources()
         {
-            var rssDtos =  await _unit.RssSources.ReadMany(r 
-                => !string.IsNullOrEmpty(r.Name))
+            var rssDtos = await _unit.RssSources.ReadMany(r
+               => !string.IsNullOrEmpty(r.Name))
                 .Select(r => new RssSourceDto()
-            {
-                Id = r.Id,
-                Name = r.Name,
-                Url = r.Url
-            }).ToListAsync();
+                {
+                    Id = r.Id,
+                    Name = r.Name,
+                    Url = r.Url
+                }).ToListAsync();
 
             return rssDtos;
-        }
-
-        public Task<NewsWithRssSourceNameDto> GetNewsWithRssSourceNameById(Guid id)
-        {
-            throw new NotImplementedException();
         }
 
         public RssSourceDto GetRssSourceById(Guid id)
         {
             return _mapper.Map<RssSourceDto>(_unit.RssSources.ReadById(id));
+        }
+
+        public bool Exist(Guid id)
+        {
+            return _unit.RssSources.ReadAll().Any(e => e.Id == id);
         }
     }
 }

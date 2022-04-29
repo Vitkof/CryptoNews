@@ -15,8 +15,8 @@ namespace CryptoNews.DAL.CQS.QueryHandlers.RefreshToken
 {
     public class GetRefreshTokenByTokenValueQueryHandler : IRequestHandler<GetRefreshTokenByTokenValueQuery, RefreshTokenDto>
     {
-        private IMapper _mapper;
-        private CryptoNewsContext _context;
+        private readonly IMapper _mapper;
+        private readonly CryptoNewsContext _context;
 
         public GetRefreshTokenByTokenValueQueryHandler(IMapper mapper,
                                                        CryptoNewsContext context)

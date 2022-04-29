@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Serilog" Version="2.10.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CryptoNews.Core.DTO\CryptoNews.Core.DTO.csproj" />
     <ProjectReference Include="..\CryptoNews.DAL.Entities\CryptoNews.DAL.Entities.csproj" />
     <ProjectReference Include="..\CryptoNews.DAL.IRepositories\CryptoNews.DAL.IRepositories.csproj" />

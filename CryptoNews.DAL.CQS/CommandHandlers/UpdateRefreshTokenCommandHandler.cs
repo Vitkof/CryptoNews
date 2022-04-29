@@ -11,8 +11,8 @@ namespace CryptoNews.DAL.CQS.CommandHandlers
 {
     public class UpdateRefreshTokenCommandHandler : IRequestHandler<UpdateRefreshTokenCommand, int>
     {
-        private CryptoNewsContext _context;
-        private IMapper _mapper;
+        private readonly CryptoNewsContext _context;
+        private readonly IMapper _mapper;
 
         public UpdateRefreshTokenCommandHandler(IMapper mapper,
                                                 CryptoNewsContext db)

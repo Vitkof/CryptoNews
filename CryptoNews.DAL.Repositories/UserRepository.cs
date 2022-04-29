@@ -13,12 +13,11 @@ namespace CryptoNews.DAL.Repositories
     {
 
         public UserRepository(CryptoNewsContext cont) : base(cont)
-        {
-        }
+        { }
 
-        public User ReadByFullName(string fullName)
+        public IQueryable<User> ReadByFullName(string fullName)
         {
-            throw new NotImplementedException();
+            return _table.Where(u => u.FullName.Equals(fullName));
         }
     }
 }

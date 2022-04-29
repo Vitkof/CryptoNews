@@ -38,19 +38,19 @@ namespace CryptoNews.Services.Implement
 
         public async Task AddComment(CommentDto cd)
         {
-            await _unit.Comments.Create(_mapper.Map<Comment>(cd));
+            await _unit.Comments.CreateAsync(_mapper.Map<Comment>(cd));
             await _unit.SaveChangesAsync();
         }
 
         public async Task<int> DeleteComment(CommentDto cd)
         {
-            await _unit.Comments.Delete(cd.Id);
+            _unit.Comments.Delete(cd.Id);
             return await _unit.SaveChangesAsync();
         }
 
         public async Task<int> EditComment(CommentDto cd)
         {
-            await _unit.Comments.Update(_mapper.Map<Comment>(cd));
+            _unit.Comments.Update(_mapper.Map<Comment>(cd));
             return await _unit.SaveChangesAsync();
         }
     }

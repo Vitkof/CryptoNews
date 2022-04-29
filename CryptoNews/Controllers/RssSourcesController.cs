@@ -15,14 +15,14 @@ namespace CryptoNews.Controllers
 {
     public class RssSourcesController : Controller
     {
-        private readonly CryptoNewsContext _context;
         private readonly INewsService _newsService;
+        private readonly IRssSourceService _rssService;
 
-        public RssSourcesController(CryptoNewsContext context,
-            INewsService newsSvc)
+        public RssSourcesController(INewsService newsSvc,
+                                    IRssSourceService rssSvc)
         {
-            _context = context;
             _newsService = newsSvc;
+            _rssService = rssSvc;
         }
 
         // GET: RssSources
@@ -30,21 +30,21 @@ namespace CryptoNews.Controllers
             IndexInternal();
         private async Task<IActionResult> IndexInternal()
         {
-            return View(await _context.RssSources.ToListAsync());
+            var allRss = await _rssService.GetAllRssSources();
+            return View(allRss);
         }
 
         // GET: RssSources/Details/5
-        public Task<IActionResult> Details(Guid? id) =>
+        public IActionResult Details(Guid? id) =>
             DetailsInternal(id);
-        private async Task<IActionResult> DetailsInternal(Guid? id)
+        private IActionResult DetailsInternal(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
-            var rssSource = await _context.RssSources
-                .FirstOrDefaultAsync(m => m.Id == id);
+            
+            var rssSource = _rssService.GetRssSourceById(id.Value);
             if (rssSource == null)
             {
                 return NotFound();
@@ -60,31 +60,28 @@ namespace CryptoNews.Controllers
         }
 
         // POST: RssSources/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Url")] RssSource rssSource)
+        public async Task<IActionResult> Create([Bind("Id,Name,Url")] RssSourceDto rssSource)
         {
             if (ModelState.IsValid)
             {
                 rssSource.Id = Guid.NewGuid();
-                _context.RssSources.Add(rssSource);
-                await _context.SaveChangesAsync();
+                await _rssService.AddRssSource(rssSource);
                 return RedirectToAction(nameof(Index));
             }
             return View(rssSource);
         }
 
         // GET: RssSources/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public IActionResult Edit(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var rssSource = await _context.RssSources.FindAsync(id);
+            var rssSource = _rssService.GetRssSourceById(id.Value);
             if (rssSource == null)
             {
                 return NotFound();
@@ -93,11 +90,9 @@ namespace CryptoNews.Controllers
         }
 
         // POST: RssSources/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Url")] RssSource rssSource)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Url")] RssSourceDto rssSource)
         {
             if (id != rssSource.Id)
             {
@@ -108,8 +103,7 @@ namespace CryptoNews.Controllers
             {
                 try
                 {
-                    _context.RssSources.Update(rssSource);
-                    await _context.SaveChangesAsync();
+                    await _rssService.EditRssSource(rssSource);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -128,17 +122,16 @@ namespace CryptoNews.Controllers
         }
 
         // GET: RssSources/Delete/5
-        public Task<IActionResult> Delete(Guid? id) =>
+        public IActionResult Delete(Guid? id) =>
             DeleteInternal(id);
-        private async Task<IActionResult> DeleteInternal(Guid? id)
+        private IActionResult DeleteInternal(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var rssSource = await _context.RssSources
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var rssSource = _rssService.GetRssSourceById(id.Value);
             if (rssSource == null)
             {
                 return NotFound();
@@ -152,15 +145,14 @@ namespace CryptoNews.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var rssSource = await _context.RssSources.FindAsync(id);
-            _context.RssSources.Remove(rssSource);
-            await _context.SaveChangesAsync();
+            var rssSource = _rssService.GetRssSourceById(id);
+            await _rssService.DeleteRssSource(rssSource);
             return RedirectToAction(nameof(Index));
         }
 
         private bool RssSourceExists(Guid id)
         {
-            return _context.RssSources.Any(e => e.Id == id);
+            return _rssService.Exist(id);
         }
 
         // GET: RssSources/News/
@@ -173,7 +165,7 @@ namespace CryptoNews.Controllers
 
             var itemsOnPage = 12;
             var newsPerPages = model.Skip((pageNumber - 1) * itemsOnPage).Take(itemsOnPage);
-            PageInfo info = new PageInfo()
+            PageInfo info = new()
             {
                 PageNumber = pageNumber,
                 ItemsOnPage = itemsOnPage,

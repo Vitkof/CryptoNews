@@ -12,7 +12,7 @@ namespace CryptoNews.Services.Implement
 {
     public class OnlinerParserService : CommonParserActions, IWebPageParser
     {
-        public async Task<string> ParseBody(string url)
+        public string ParseBody(string url)
         {
 
             HtmlWeb web = new HtmlWeb();
@@ -36,7 +36,7 @@ namespace CryptoNews.Services.Implement
             return body;
         }
 
-        public async Task<string> CleanDescription(string descript)
+        public string CleanDescription(string descript)
         {
             Regex reg = new Regex(@"\w(.*?[.!?])(.*?[.!?])", RegexOptions.Compiled);
             Match m = reg.Match(descript);

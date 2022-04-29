@@ -1,12 +1,11 @@
 ﻿using CryptoNews.DAL.Entities;
 using System;
-
+using System.Linq;
 
 namespace CryptoNews.DAL.IRepositories
 {
     public interface IUserRepository : IRepository<User>
     {
-        User ReadByFullName(string fullName);
-        
+        IQueryable<User> ReadByFullName(string fullName);
     }
 }

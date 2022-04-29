@@ -8,7 +8,7 @@ namespace CryptoNews.Core.IServices
 {
     public interface IWebPageParser
     {
-        Task<string> ParseBody(string url);
-        Task<string> CleanDescription(string descript);
+        string ParseBody(string url);
+        string CleanDescription(string descript);
     }
 }

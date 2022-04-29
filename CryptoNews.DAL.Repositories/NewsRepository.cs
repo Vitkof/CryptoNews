@@ -15,9 +15,14 @@ namespace CryptoNews.DAL.Repositories
             : base(cont)
         { }
 
-        public News ReadByTitle(string title)
+        public News ReadByFullTitle(string title)
         {
-            throw new NotImplementedException();
+            return _table.Where(n => n.Title.Equals(title)).SingleOrDefault();
+        }
+
+        public IQueryable<News> ReadBySubTitle(string titlePart)
+        {
+            return _table.Where(u => u.Title.Contains(titlePart));
         }
 
         public IQueryable<News> GetNotNullRss()

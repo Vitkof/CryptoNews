@@ -8,7 +8,7 @@ namespace CryptoNews.Core.IServices
     public interface IUserService
     {
         string GetHashPassword(string pass);
-        Task<IEnumerable<UserDto>> FindUsers();
+        IEnumerable<UserDto> GetUsers();
         UserDto GetUserById(Guid id);
         UserDto GetUserByEmail(string email);
 

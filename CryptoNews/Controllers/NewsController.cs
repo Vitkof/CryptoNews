@@ -35,8 +35,8 @@ namespace CryptoNews.Controllers
         }
 
         // GET: News/
-        public Task<IActionResult> Index(Guid? sourceId, int pageNumber = 1) =>
-            GetIndexInternal(sourceId, pageNumber);
+        public async Task<IActionResult> Index(Guid? sourceId, int pageNumber = 1) =>
+            await GetIndexInternal(sourceId, pageNumber);
         private async Task<IActionResult> GetIndexInternal(Guid? sourceId, int pageNumber)
         {
             List<NewsDto> model;

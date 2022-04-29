@@ -11,16 +11,20 @@ using CryptoNews.DAL.IRepositories;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using Serilog;
+using AutoMapper;
 
 namespace CryptoNews.Services.Implement
 {
     public class UserService : IUserService
     {
         private readonly IUnitOfWork _unit;
+        private readonly IMapper _mapper;
 
-        public UserService(IUnitOfWork unitOfWork)
+        public UserService(IUnitOfWork unitOfWork,
+                           IMapper mapper)
         {
             _unit = unitOfWork;
+            _mapper = mapper;
         }
 
         public string GetHashPassword(string modelPass)
@@ -36,15 +40,18 @@ namespace CryptoNews.Services.Implement
             try
             {
                 var roleId = _unit.Roles.Read(r => r.Name.Equals("User")).Id;
-                await _unit.Users.Create(new User()
+                await _unit.Users.CreateAsync(new User()
                 {
                     Id = ud.Id,
                     Email = ud.Email,
+                    PhoneNumber = ud.PhoneNumber,
                     PasswordHash = ud.PasswordHash,
                     RoleId = roleId,
                     RegisterTime = DateTime.Now,
-                    FirstName = "Victor",
-                    LastName = "Chumakov"
+                    FirstName = ud.FirstName,
+                    LastName = ud.LastName,
+                    Gender = ud.Gender,
+                    ShortDescription = ud.ShortDescription
                 });
                 await _unit.SaveChangesAsync();
                 return true;
@@ -56,38 +63,42 @@ namespace CryptoNews.Services.Implement
             }
         }
 
+        #nullable enable
         public UserDto? GetUserByEmail(string email)
         {
             var user = _unit.Users.Read(user => user.Email.Equals(email));
             if (user is null) return null;
-            return new UserDto()
+            return _mapper.Map<UserDto>(user);
+        }
+
+
+        public async Task<int> DeleteUser(UserDto ud)
+        {
+            _unit.Users.Delete(ud.Id);
+            return await _unit.SaveChangesAsync();
+        }
+
+        public async Task<int> EditUser(UserDto ud)
+        {
+            return await Task.Run(async () =>
             {
-                Id = user.Id,
-                Email = user.Email,
-                PasswordHash = user.PasswordHash,
-                RoleId = user.RoleId
-            };
+                var user = _mapper.Map<User>(ud);
+
+                _unit.Users.Update(user);
+                return await _unit.SaveChangesAsync();
+            });
         }
 
-
-        public Task<int> DeleteUser(UserDto ud)
+        public IEnumerable<UserDto> GetUsers()
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<int> EditUser(UserDto ud)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<UserDto>> FindUsers()
-        {
-            throw new NotImplementedException();
+            var users = _unit.Users.ReadAll();
+            return users.Select(u => _mapper.Map<UserDto>(u))
+                        .ToList();
         }
 
         public UserDto GetUserById(Guid id)
         {
-            throw new NotImplementedException();
+            return _mapper.Map<UserDto>(_unit.Users.ReadById(id));
         }
     }
 }

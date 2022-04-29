@@ -123,8 +123,8 @@ namespace CryptoNews.Controllers
         }
 
         [HttpGet]
-        public Task<IActionResult> LogOut() =>
-            LogoutInternal();
+        public async Task<IActionResult> LogOut() =>
+            await LogoutInternal();
         private async Task<IActionResult> LogoutInternal()
         {
             RegisterActivity();

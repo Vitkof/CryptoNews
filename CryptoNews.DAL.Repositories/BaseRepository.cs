@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CryptoNews.DAL.Repositories
 {
-    public abstract class BaseRepository<T> : IRepository<T> where T : class, IBaseEntity
+    public abstract class BaseRepository<T> : IRepository<T> where T : class, IBaseEntity<Guid>
     {
         protected readonly CryptoNewsContext _db;
         protected readonly DbSet<T> _table;
@@ -17,31 +17,28 @@ namespace CryptoNews.DAL.Repositories
         public BaseRepository(CryptoNewsContext context)
         {
             _db = context;
-            _table = _db.Set<T>();
+            _table = _db?.Set<T>();
         }
 
-
-
-        public async Task Create(T entity)
+        
+        public async Task CreateAsync(T entity)
         {
             await _table.AddAsync(entity);
         }
 
-        public async Task CreateRange(IEnumerable<T> entitiesRange)
+        public async Task CreateRangeAsync(IEnumerable<T> entitiesRange)
         {
             await _table.AddRangeAsync(entitiesRange);
         }
 
-        
-
         public T Read(Expression<Func<T, bool>> predic)
         {
-            return _table.Where(predic).FirstOrDefault();
+            return _table.AsNoTracking().Where(predic).FirstOrDefault();
         }
 
         public IQueryable<T> ReadAll()
         {
-            return _table;//Where(e => !String.IsNullOrWhiteSpace(e.Title));
+            return _table;
         }
 
         public T ReadById(Guid id)
@@ -60,30 +57,27 @@ namespace CryptoNews.DAL.Repositories
             return res;
         }
 
-
-        public async Task Update(T entity)
+        public void Update(T entity)
         {
             _table.Update(entity);
-            await _db.SaveChangesAsync();
         }
 
 
-        public async Task Delete(Guid id)
+        public void Delete(Guid id)
         {
             T ent = ReadById(id);
             _table.Remove(ent);
-            await _db.SaveChangesAsync();
         }
 
-        public Task Delete(Expression<Func<T, bool>> where)
+        public void Delete(Expression<Func<T, bool>> where)
         {
-            throw new NotImplementedException();
+            T ent = _table.AsNoTracking().Where(where).FirstOrDefault();
+            _table.Remove(ent);
         }
 
-        public async Task DeleteRange(IEnumerable<T> entitiesRange)
+        public void DeleteRange(IEnumerable<T> entitiesRange)
         {
             _table.RemoveRange(entitiesRange);
-            await _db.SaveChangesAsync();
         }
 
 

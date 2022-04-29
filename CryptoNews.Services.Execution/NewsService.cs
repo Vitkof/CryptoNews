@@ -120,21 +120,21 @@ namespace CryptoNews.Services.Implement
 
                     if (rssSrc.Name.Equals("Lenta.ru"))
                     {
-                        await BodyDescFillerAsync(listDtos, _lentaParser);
+                        BodyDescFillerAsync(listDtos, _lentaParser);
                     }
 
                     else if(rssSrc.Name.Equals("Onliner"))
                     {
                         foreach (var dto in listDtos)
                         {
-                            dto.Body = await _onlinerParser.ParseBody(dto.Url);
+                            dto.Body = _onlinerParser.ParseBody(dto.Url);
                             string description = dto.Body;
-                            dto.Description = await _onlinerParser.CleanDescription(description);
+                            dto.Description = _onlinerParser.CleanDescription(description);
                         }
                     }
                     else if(rssSrc.Name.Equals("Cointelegraph.com"))
                     {
-                        await BodyDescFillerAsync(listDtos, _cointelegraphParser);
+                        BodyDescFillerAsync(listDtos, _cointelegraphParser);
                     }
 
                     /*else if (rssSrc.Name.Equals("Bitcoin News"))
@@ -160,7 +160,7 @@ namespace CryptoNews.Services.Implement
         public async Task AddNews(NewsDto nd)
         {
             var news = FromDtoToNews(nd);
-            await _unit.News.Create(news);
+            await _unit.News.CreateAsync(news);
             await _unit.SaveChangesAsync();
         }
 
@@ -168,14 +168,14 @@ namespace CryptoNews.Services.Implement
         {
             var range = newsDto.Select(nd => FromDtoToNews(nd))
                 .ToList();
-            await _unit.News.CreateRange(range);
+            await _unit.News.CreateRangeAsync(range);
             await _unit.SaveChangesAsync();
         }
 
         public async Task<int> DeleteNews(NewsDto nd)
         {
             var news = FromDtoToNews(nd);
-            await _unit.News.Delete(news.Id);
+            _unit.News.Delete(news.Id);
             return await _unit.SaveChangesAsync();
         }
 
@@ -184,7 +184,7 @@ namespace CryptoNews.Services.Implement
             return await Task.Run(async () =>
             {
                 var range = nds.Select(nd => FromDtoToNews(nd));
-                await _unit.News.DeleteRange(range);
+                _unit.News.DeleteRange(range);
                 return await _unit.SaveChangesAsync();
             });            
         }
@@ -194,7 +194,7 @@ namespace CryptoNews.Services.Implement
             return await Task.Run(async () =>
             {
                 var news = FromDtoToNews(nd);
-                await _unit.News.Update(news);
+                _unit.News.Update(news);
                 return await _unit.SaveChangesAsync();
             });
         }
@@ -258,12 +258,12 @@ namespace CryptoNews.Services.Implement
             return newsDtos;
         }
 
-        private static async Task BodyDescFillerAsync(IEnumerable<NewsDto> dtos, IWebPageParser parser)
+        private static void BodyDescFillerAsync(IEnumerable<NewsDto> dtos, IWebPageParser parser)
         {
             foreach(var dto in dtos)
             {
-                dto.Body = await parser.ParseBody(dto.Url);
-                dto.Description = await parser.CleanDescription(dto.Description);
+                dto.Body = parser.ParseBody(dto.Url);
+                dto.Description = parser.CleanDescription(dto.Description);
             }
         }
     }

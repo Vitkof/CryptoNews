@@ -7,7 +7,8 @@ namespace CryptoNews.DAL.IRepositories
 {
     public interface INewsRepository : IRepository<News>
     {
-        News ReadByTitle(string title);
+        News ReadByFullTitle(string title);
+        IQueryable<News> ReadBySubTitle(string titlePart);
         IQueryable<News> GetNotNullRss();
     }
 }

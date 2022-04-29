@@ -14,12 +14,11 @@ namespace CryptoNews.DAL.Repositories
     {
 
         public RssRepository(CryptoNewsContext cont) : base(cont)
-        {
-        }
+        { }
 
         public RssSource ReadByName(string name)
         {
-            throw new NotImplementedException();
+            return _table.Where(r => r.Name.Equals(name)).FirstOrDefault();
         }
     }
 }

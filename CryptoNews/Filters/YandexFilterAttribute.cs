@@ -41,7 +41,6 @@ namespace CryptoNews.Filters
 
         public void OnResourceExecuted(ResourceExecutedContext context)
         {
-            context.HttpContext.Response.Headers.Add("Test", new StringValues("abc"));
         }
     }
 }
