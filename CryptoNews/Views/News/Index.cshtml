@@ -17,40 +17,68 @@
 </p>
 
 
-    <div class="row">
-        @foreach (var item in Model.NewsPerPages)
-        {
-            await Html.RenderPartialAsync("PreviewNews", item);
-        }
+<div class="row">
+    @foreach (var item in Model.NewsPerPages)
+    {
+        await Html.RenderPartialAsync("PreviewNews", item);
+    }
+</div>
+
+<div id="paginat-line">
+    <div>
+        @Html.CreatePaginator(Model.PageInfo, i => Url.Action("Index", new
+        { pageNumber = i }))
     </div>
 
-
-<div class="btn-group">
-    @Html.CreatePaginator(Model.PageInfo, i => Url.Action("Index", new { 
-    @*sourceId = Model.NewsPerPages.FirstOrDefault().RssSourceId,*@ 
-    pageNumber = i 
-}))
+    <div id="concretNum" width="90">
+        <span class="pages">&nbsp; Number &nbsp;</span>
+        <input type="text" id="page" class="page" />
+        <input type="hidden" id="max-page" value="" />
+        <img src="img/s_ev.gif" id="concretA"
+                onmouseover="this.style.cursor='pointer';"
+                style="cursor: pointer; padding-bottom: 1px;" />
+    </div>
 </div>
-    
 
-<script>
-    export default {
 
-        methods: {// функций на страницу
-            prev() {
-                const page = @Model.PageInfo.PageNumber;
-                if (page > 0) {
-                    let num = page - 1;
-                    Response.Redirect("~/News/Index/"+num);
-            },
-            next() {
-                const page = @Model.PageInfo.PageNumber;
-                    if (page < @Model.PageInfo.CountPages) {
-                        let num = page + 1;
-                        Response.Redirect("~/News/Index/"+num);
-                    }                   
-            },
-        },
+<script type="module">
+    const pageNum = @Model.PageInfo.PageNumber;
+
+    var prevBtn = document.getElementById("prev");
+    if (pageNum == 1) {
+        prevBtn.style.color = "lightgray";
     }
+
+    prevBtn.addEventListener("click", function (event) {
+        if (pageNum > 1) {
+            let num = page - 1;
+            location.search = `?pageNumber=${num}`;
+        }
+    });
+
+    var nextBtn = document.getElementById("next");
+    if (pageNum == @Model.PageInfo.CountPages) {
+        nextBtn.style.color = "lightgray";
+    }
+
+    nextBtn.addEventListener("click", function (event) {
+        if (pageNum < @Model.PageInfo.CountPages) {
+            let num = page + 1;
+            location.search = `?pageNumber=${num}`;
+        }
+    });
+
+    var concretArrow = document.getElementById("concretA");
+    concretArrow.addEventListener("click", function (event) {
+        const page = parseInt(document.getElementById("page").value);
+        if ((page <= @Model.PageInfo.CountPages)
+            && (0 < page))
+        {
+            location.search = `?pageNumber=${page}`;
+        }
+        else {
+            alert('The page number cannot be greater than ' + @Model.PageInfo.CountPages + ' and less 1.');
+        }
+    })
 </script>
     

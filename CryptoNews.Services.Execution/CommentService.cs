@@ -27,13 +27,22 @@ namespace CryptoNews.Services.Implement
             _mapper = map;
         }
 
-        public IEnumerable<CommentDto> GetCommentsByNewsId(Guid newsId)
+        public IEnumerable<CommentWithInfoDto> GetCommentsByNewsId(Guid newsId)
         {
-            return _unit.Comments
+            var comments = _unit.Comments
                 .ReadMany(comm => comm.NewsId.Equals(newsId))
                 .OrderBy(comm => comm.Rating)
                 .ThenBy(comm => comm.CreateAt)
-                .Select(comm => _mapper.Map<CommentDto>(comm)).ToList();
+                .Select(comm => _mapper.Map<CommentWithInfoDto>(comm));
+
+            foreach (var comm in comments) 
+            {
+                var user = _unit.Users.ReadById(comm.UserId);
+                comm.UserFullName = user.FullName;
+                comm.UserAvatarUrl = user.AvatarUrl;
+            }
+
+            return comments.ToList();
         }
 
         public async Task AddComment(CommentDto cd)

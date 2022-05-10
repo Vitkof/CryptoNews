@@ -103,6 +103,11 @@ namespace CryptoNews.Services.Implement.CqsServices
                 return null;
             }
         }
+
+        IEnumerable<CommentWithInfoDto> ICommentService.GetCommentsByNewsId(Guid newsId)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }

@@ -22,6 +22,6 @@ namespace CryptoNews.Models.ViewModels
         public Guid? RssSourceId { get; set; }
         public string RssSourceName { get; set; }
 
-        public IEnumerable<CommentDto> Comments { get; set; }
+        public IEnumerable<CommentWithInfoDto> Comments { get; set; }
     }
 }

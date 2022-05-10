@@ -1,0 +1,21 @@
+﻿@{
+    Layout = null;
+}
+
+
+<form class="new-comment-form">
+    <input type="hidden" id="newsId" name="newsId" value="@Model.Id" />
+
+    <div id="mb-3" class="mb-3">
+        <label for="commText" class="form-label">Your comment:</label>
+        <textarea name="commText" maxlength="1100" placeholder="What do you think about it?" class="form-control" id="commText" rows="3"
+                  onkeyup="counting(this.value)"
+        ></textarea>
+    </div>
+
+    <div class="col-sm-12">
+        <button id="send-comment" class="btn btn-primary write-comment-btn" type="submit">
+            Send
+        </button>
+    </div>
+</form>

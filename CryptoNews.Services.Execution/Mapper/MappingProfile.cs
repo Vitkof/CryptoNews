@@ -18,6 +18,7 @@ namespace CryptoNews.Services.Implement.Mapper
             CreateMap<Role, RoleDto>().ReverseMap();
             CreateMap<RefreshToken, RefreshTokenDto>()
                 .ReverseMap();
+            CreateMap<Comment, CommentWithInfoDto>();
         }
     }
 }

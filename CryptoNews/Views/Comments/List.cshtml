@@ -7,11 +7,7 @@
 }
 
 <div class="container">
-    <div>
-        @await Html.PartialAsync("NewComm")
-    </div>
-
-    <div id="comments-container" class="row">
+    <div id="comments-list" class="row">
         @foreach (var comment in Model.Comments)
         {
             @await Html.PartialAsync("Comment.cshtml", comment)

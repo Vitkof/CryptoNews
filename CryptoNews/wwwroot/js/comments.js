@@ -1,4 +1,6 @@
-﻿let commentsShow = document.getElementById('comments-show');
+﻿document.getElementById('send-comment').addEventListener("click", createComment);
+let commentsShow = document.getElementById('comments-show');
+let commentsContainer = document.getElementById('comments-container');
 let isShowed = false;
 
 function toggleComments(newsId) {
@@ -6,14 +8,11 @@ function toggleComments(newsId) {
     if (commentsShow != null) {
         if (isShowed == true) {
             commentsShow.innerHTML = 'Show comments';
-            document.getElementById('comments-container').innerHTML = '';
+            commentsContainer.innerHTML = '';
         } else {
             commentsShow.innerHTML = 'Hide comments';
-            let commentsContainer = document.getElementById('comments-container');
-
-
+            
             loadingComments(newsId, commentsContainer);
-
         }
         isShowed = !isShowed;
     }
@@ -34,9 +33,6 @@ function loadingComments(newsId, commentsContainer)
         {
             let resp = reqGet.responseText;
             commentsContainer.innerHTML = resp;
-
-            document.getElementById('send-comment')
-                .addEventListener("click", createComment);
         }
     }
     reqGet.send();
@@ -52,15 +48,11 @@ function createComment() {
     let commText = document.getElementById('commText').value;
     let newsId = document.getElementById('newsId').value;
 
-    //validateCommentData();
+    validateCommentData();
 
     var reqPost = new XMLHttpRequest();
     reqPost.open("POST", '/Comments/Create', true);
     reqPost.setRequestHeader('Content-Type', 'application/json');
-
-    //let requestData = new {
-    //    commentText: commentText
-    //}
 
     reqPost.send(JSON.stringify({
         commText: commText,
@@ -71,13 +63,50 @@ function createComment() {
         if (reqPost.status >= 200 && reqPost.status < 400) {
             document.getElementById('commText').value = '';
 
-            //commentsContainer.innerHTML += '';
-
-            loadingComments(newsId);
+            loadingComments(newsId, commentsContainer);
         }
     }   
 }
 
-//var getCommentsIntervalId = setInterval(function () {
-//    loadingComments(newsId);
-//}, 15000);
+
+function getCommentsIntervalId(newsId) {
+    setInterval(function () {
+        if (isShowed == true) {
+            loadingComments(newsId, commentsContainer);
+        }
+    }, 15000);
+}
+
+
+function counting(text) {
+    const limit = 1000;
+    let count = text.length;
+    let commentBlock = document.getElementById('mb-3');
+    let lm = document.getElementById('limitMsg');
+
+    if (count > limit-100) {
+        let p = document.createElement('p');
+        p.id = "limitMsg";
+
+        if (count <= limit) {
+            let left = limit - count;
+            p.innerHTML = '<span style="color:green; font-weight:600">'
+                + left + '</span> characters to the limit';
+        }
+        else {
+            let right = count - limit;
+            p.innerHTML = '<span style="color:red; font-weight:600">'
+                + right + '</span> characters over the limit';
+        }
+
+        if (commentBlock.contains(lm)) {
+            commentBlock.replaceChild(p, lm);
+        }
+        else {
+            commentBlock.append(p);
+        }
+    }
+    else {
+        if(lm != null) commentBlock.removeChild(lm);
+    }
+}

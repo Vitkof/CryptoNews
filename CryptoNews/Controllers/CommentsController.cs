@@ -53,6 +53,7 @@ namespace CryptoNews.Controllers
                 Text = vm.CommText,
                 CreateAt = DateTime.Now,
                 UserId = userId,
+                Active = true,
                 Rating = 0,
                 ParentId = null
             };

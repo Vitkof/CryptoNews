@@ -11,6 +11,14 @@ namespace CryptoNews.Models
         public int ItemsOnPage { get; set; }
         public int CountItems { get; set; }
 
-        public int CountPages => CountItems / ItemsOnPage + 1;
+        public int CountPages 
+        {
+            get
+            {
+                return CountItems % ItemsOnPage == 0
+                    ? CountItems / ItemsOnPage
+                    : CountItems / ItemsOnPage + 1;
+            }
+        }
     }
 }

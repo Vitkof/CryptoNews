@@ -1,8 +1,15 @@
-﻿@model CryptoNews.Core.DTO.CommentDto
+﻿@model CryptoNews.Core.DTO.CommentWithInfoDto
 
 <div class="card col-sm-12">
-    <div class="card-body">
+    <div class="reply_author">
+        <p class="card-title">@Model.UserFullName</p>
+    </div>
+    <div class="reply_rext">
         <p class="card-text">@Model.Text</p>
-        <h6>@Model.CreateAt.ToString("g")</h6>
+    </div>
+    <div class="reply_footer">
+        <div class="reply_date">
+            <h6>@Model.CreateAt.ToString("d MMM, yyyy 'at' HH:mm")</h6>
+        </div>
     </div>
 </div>

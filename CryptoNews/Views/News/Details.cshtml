@@ -17,7 +17,7 @@
         </dd>
 
         <dt class="col-sm-2">
-            
+
         </dt>
         <dd class="col-sm-10">
             @Model.Body
@@ -42,7 +42,8 @@
 </div>
 
 <div class="row ">
-    <button id="comments-show" class="btn btn-primary col-sm-12" onclick="toggleComments('@Model.Id')">
+    @await Html.PartialAsync("../Comments/NewComment")
+    <button id="comments-show" class="btn btn-primary col-sm-12" onclick="toggleComments('@Model.Id')" type="button">
         Show comments
     </button>
     <div class="container">
@@ -54,4 +55,5 @@
 @section Scripts
 {
     <script src="~/js/comments.js"></script>
+    <script>getCommentsIntervalId('@Model.Id')</script>
 }

@@ -1,5 +1,5 @@
 ﻿let loginReq = new XMLHttpRequest();
-loginReq.open('GET', '/Account/Settings', false);
+loginReq.open('GET', '/Account/Settings', true);
 
 loginReq.onload = function () {
     if (loginReq.status >= 200 && loginReq.status < 400) {

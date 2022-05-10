@@ -132,6 +132,61 @@ body {
     margin:auto;
 }
 
+#paginat-line {
+    display: block;
+    margin-top: 5px;
+    width: 100%;
+}
+
+    #paginat-line div {
+        margin: auto;
+        justify-content: center;
+        width: max-content;
+    }
+
+        #paginat-line div:first-child * {
+            font-weight: 600;
+        }
+
+    #paginat-line > div a:not(.primary):hover {
+        color: #ffffff;
+        background: #CE242B;
+        font-weight: 600;
+    }
+
+    #paginat-line > div a:nth-child(2) {
+        border: dotted;
+        border-width: thin;
+    }
+
+    #paginat-line > div a:last-of-type {
+        border: dotted;
+        border-width: thin;
+    }
+
+#concretNum {
+    padding: 10px;
+}
+
+.pages {
+    padding: 1px;
+    font-family: Arial;
+    font-size: 14px;
+    color: #ffffff;
+    background-color: #999999;
+}
+
+.page {
+    font-family: Arial;
+    font-size: 14px;
+    width: 30px;
+    height: 22px;
+}
+
+.primary {
+    color: #ffffff !important;
+    background: #ff0000;
+}
 
 /* Registration-style
 -------------------------------------------------- */
@@ -243,4 +298,11 @@ body {
 
 #login-footer{
     margin-left: 23px;
+}
+
+/* Comment-Form-style
+----------------------------------------------- */
+.new-comment-form{
+    width:100%;
+    margin: 1rem 0;
 }

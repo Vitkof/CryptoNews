@@ -7,6 +7,6 @@ namespace CryptoNews.Models.ViewModels
     public class CommentsListVM
     {
         public Guid NewsId { get; set; }
-        public IEnumerable<CommentDto> Comments { get; set; }
+        public IEnumerable<CommentWithInfoDto> Comments { get; set; }
     }
 }
