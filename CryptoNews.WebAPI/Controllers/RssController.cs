@@ -1,16 +1,20 @@
 ﻿using CryptoNews.Core.DTO;
 using CryptoNews.Core.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace CryptoNews.WebAPI.Controllers
-{    
+{
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class RssController : ControllerBase
     {
         private readonly IRssSourceService _rssService;
@@ -21,53 +25,108 @@ namespace CryptoNews.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(Guid id)
+        public IActionResult Get(Guid id)
         {
             var @src = _rssService.GetRssSourceById(id);
+            if (@src == null)
+            {
+                return NotFound();
+            }
 
             return Ok(@src);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(string name, string url)
+        public async Task<IActionResult> Get()
         {
-            var @srces = await _rssService.GetAllRssSources();
-            if (!string.IsNullOrEmpty(name))
+            try
             {
-                @srces = srces.Where(dto => dto.Name.Contains(name));
+                var getAll = await _rssService.GetAllRssSources();
+
+                return Ok(getAll);
             }
-            if (!string.IsNullOrEmpty(url))
+            catch (Exception e)
             {
-                @srces = srces.Where(dto => dto.Name.Contains(url));
+                Log.Error(e.Message);
+                return NotFound(e.Message);
             }
-            return Ok(@srces);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] RssSourceDto request)
+        public async Task<IActionResult> Post([FromBody] RssSourceDto rssDto)
         {
-            await _rssService.AddRssSource(request);
-            
-            return CreatedAtAction("Create", request);
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest(ModelState);
+                await _rssService.AddRssSource(rssDto);
+                return CreatedAtAction("Post", rssDto);
+            }
+            catch(Exception ex)
+            {
+                Log.Error($"POST error adding RSS: {ex}");
+            }
+
+            return BadRequest();
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(Guid id, [FromBody] RssSourceDto value)
         {
-            return Ok();
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest(ModelState);
+                var rss = _rssService.GetRssSourceById(id);
+                if (rss == null) return NotFound();
+                await _rssService.EditRssSource(rss);
+                return Ok();
+            }
+            catch(Exception)
+            {
+
+            }
+            return BadRequest("Error updating RSS");
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> Patch()
+        public async Task<IActionResult> Patch(Guid id, [FromBody] JsonPatchDocument<RssSourceDto> patchDoc)
         {
-            return Ok();
+            try
+            {
+                if (patchDoc != null)
+                {
+                    if (!ModelState.IsValid)
+                    {
+                        return BadRequest(ModelState);
+                    }
+
+                    var rss = _rssService.GetRssSourceById(id);
+                    if (rss == null)
+                    {
+                        return NotFound();
+                    }
+
+                    patchDoc.ApplyTo(rss);
+                    await _rssService.EditRssSource(rss);
+                    return new ObjectResult(rss);
+                }
+                else
+                {
+                    return BadRequest(ModelState);
+                }
+            }
+            catch(Exception ex)
+            {
+                Log.Error($"PATCH error updating RSS: {ex}");
+            }
+            return BadRequest("Error updating RSS");
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
+            var rss = _rssService.GetRssSourceById(id);
+            await _rssService.DeleteRssSource(rss);
             return Ok();
         }
-
     }
 }
