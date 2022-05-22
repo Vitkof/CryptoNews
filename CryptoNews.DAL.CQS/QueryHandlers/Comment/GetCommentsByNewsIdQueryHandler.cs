@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CryptoNews.DAL.CQS.QueryHandlers.Comment
 {
-    public class GetCommentsByNewsIdQueryHandler : IQueryHandler<GetCommentsByNewsIdQuery, IEnumerable<CommentDto>>
+    public class GetCommentsByNewsIdQueryHandler : IQueryHandler<GetCommentsByNewsIdQuery, IEnumerable<CommentWithInfoDto>>
     {
         private readonly CryptoNewsContext _context;
         private readonly IMapper _mapper;
@@ -23,12 +23,12 @@ namespace CryptoNews.DAL.CQS.QueryHandlers.Comment
             _mapper = map;
         }
 
-        public async Task<IEnumerable<CommentDto>> Handle(GetCommentsByNewsIdQuery query, CancellationToken token)
+        public async Task<IEnumerable<CommentWithInfoDto>> Handle(GetCommentsByNewsIdQuery query, CancellationToken token)
         {
             return
                 await _context.Comments
                 .Where(c => c.NewsId.Equals(query.NewsId))
-                .Select(c => _mapper.Map<CommentDto>(c))
+                .Select(c => _mapper.Map<CommentWithInfoDto>(c))
                 .ToListAsync(token);
         }
     }

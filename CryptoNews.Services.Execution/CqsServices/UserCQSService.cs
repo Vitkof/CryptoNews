@@ -49,23 +49,6 @@ namespace CryptoNews.Services.Implement.CqsServices
             }
         }
 
-        public Task<int> DeleteUser(UserDto ud)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<int> EditUser(UserDto ud)
-        {
-            try
-            {
-                throw new NotImplementedException();
-            }
-            catch(Exception ex)
-            {
-                Log.Error($"Error EditUser: {ex.Message}");
-                throw;
-            }
-        }
 
         public IEnumerable<UserDto> GetUsers()
         {
@@ -120,6 +103,73 @@ namespace CryptoNews.Services.Implement.CqsServices
             {
                 Log.Error(ex.Message);
                 throw;
+            }
+        }
+
+        public async Task<int> EditUser(UserDto ud)
+        {
+            try
+            {
+                var userDto = GetUserById(ud.Id);
+                userDto = ud;
+                await _mediator.Send(new EditUserCommand()
+                { User = userDto });
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error UpdateUser:  {ex.Message} {ud.Id}");
+                return 0;
+            }
+        }
+
+        public async Task<int> DeleteUser(UserDto ud)
+        {
+            try
+            {
+                await _mediator.Send(new DeleteUserCommand()
+                { Id = ud.Id });
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error DeleteUser: {ex.Message} {ud.Id}");
+                return 0;
+            }
+        }
+
+        public async Task<string> GetEmailByRefreshToken(string token)
+        {
+            try
+            {
+                var query = new GetEmailByRefreshTokenQuery()
+                { Token = token };
+                var email = await _queryDispatcher
+                    .HandleAsync<GetEmailByRefreshTokenQuery, string>(query, new CancellationToken());
+                return email;
+            }
+            catch(Exception ex)
+            {
+                Log.Error($"Error GetEmailByRefreshToken: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<bool> CheckAuthIsValid(UserDto ud)
+        {
+            try
+            {
+                var user = await _mediator.Send(new CheckAuthenticationQuery()
+                {
+                    Email = ud.Email,
+                    PasswordHash = ud.PasswordHash
+                });
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Register was not successful");
+                return false;
             }
         }
     }

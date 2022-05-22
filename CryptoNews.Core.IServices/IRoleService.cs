@@ -8,6 +8,7 @@ namespace CryptoNews.Core.IServices
     public interface IRoleService
     {
         RoleDto GetRoleByUserId(Guid userId);
+        string GetRoleNameByEmail(string email);
         IEnumerable<RoleDto> GetRoles();
         Task AddRoleToUser(Guid userId, RoleDto rd);
     }

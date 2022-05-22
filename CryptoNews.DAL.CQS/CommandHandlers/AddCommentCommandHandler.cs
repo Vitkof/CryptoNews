@@ -1,19 +1,14 @@
 ﻿using AutoMapper;
 using CryptoNews.DAL.CQS.Commands;
 using CryptoNews.DAL.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace CryptoNews.DAL.CQS.CommandHandlers
 {
     public class AddCommentCommandHandler : ICommandHandler<AddCommentCommand>
     {
-        private CryptoNewsContext _context;
-        private IMapper _mapper;
+        private readonly CryptoNewsContext _context;
+        private readonly IMapper _mapper;
 
         public AddCommentCommandHandler(CryptoNewsContext context, IMapper map)
         {

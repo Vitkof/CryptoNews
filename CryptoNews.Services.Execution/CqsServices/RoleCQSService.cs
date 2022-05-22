@@ -23,12 +23,14 @@ namespace CryptoNews.Services.Implement.CqsServices
             _commandDispatcher = com;
         }
 
-        public Task AddRoleToUser(Guid userId, RoleDto rd)
+        public async Task AddRoleToUser(Guid userId, RoleDto role)
         {
-            throw new NotImplementedException();
+            await Task.Run(()=>
+                ReplaceUserRole(userId, role)
+            );
         }
 
-        public void ReplaceUserRole(Guid userId, RoleDto role)
+        private void ReplaceUserRole(Guid userId, RoleDto role)
         {
             try
             {
@@ -56,6 +58,23 @@ namespace CryptoNews.Services.Implement.CqsServices
             {
                 Log.Error($"GetRoleByUserId Error: {ex.Message}");
                 return null;
+            }
+        }
+
+        public string GetRoleNameByEmail(string email)
+        {
+            try
+            {
+                var query = new GetRoleNameByEmailQuery()
+                { Email = email };
+                var roleName = _queryDispatcher
+                    .Dispatch<GetRoleNameByEmailQuery, string>(query, new CancellationToken());
+                return roleName;
+            }
+            catch(Exception ex)
+            {
+                Log.Error($"GetRoleNameByEmail Error: {ex.Message}");
+                throw;
             }
         }
 

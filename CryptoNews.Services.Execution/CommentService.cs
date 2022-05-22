@@ -45,6 +45,19 @@ namespace CryptoNews.Services.Implement
             return comments.ToList();
         }
 
+        public CommentDto GetCommentById(Guid id)
+        {
+            return _mapper.Map<CommentDto>(_unit.Comments.ReadById(id));
+        }
+
+        public async Task<CommentDto> GetCommentByIdAsync(Guid id)
+        {
+            return
+                await Task.Run(() =>
+                _mapper.Map<CommentDto>(_unit.Comments.ReadById(id))
+                );
+        }
+
         public async Task AddComment(CommentDto cd)
         {
             await _unit.Comments.CreateAsync(_mapper.Map<Comment>(cd));

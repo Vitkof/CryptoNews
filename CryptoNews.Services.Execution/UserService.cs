@@ -100,5 +100,15 @@ namespace CryptoNews.Services.Implement
         {
             return _mapper.Map<UserDto>(_unit.Users.ReadById(id));
         }
+
+        public Task<string> GetEmailByRefreshToken(string token)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> CheckAuthIsValid(UserDto ud)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

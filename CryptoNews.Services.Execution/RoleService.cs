@@ -55,6 +55,17 @@ namespace CryptoNews.Services.Implement
                 .ToList();
         }
 
+        public string GetRoleNameByEmail(string email)
+        {
+            var user = _unit.Users.Read(u => u.Email.Equals(email));
+            if (user != null)
+            {
+                var role = GetRoleByUserId(user.Id);
+                return role.Name;
+            }
+
+            return string.Empty;
+        }
 
         public async Task<int> DeleteRole(RoleDto rd)
         {

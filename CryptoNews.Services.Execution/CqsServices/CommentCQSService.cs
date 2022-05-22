@@ -57,7 +57,7 @@ namespace CryptoNews.Services.Implement.CqsServices
         {
             try
             {
-                var commentDto = await GetCommentById(cd.Id);
+                var commentDto = await GetCommentByIdAsync(cd.Id);
                 commentDto.Text = cd.Text;
                 await _mediator.Send(new EditCommentCommand() 
                 { Comment = commentDto });
@@ -72,7 +72,7 @@ namespace CryptoNews.Services.Implement.CqsServices
         #endregion
 
         #region Queries
-        public async Task<CommentDto> GetCommentById(Guid commentId)
+        public async Task<CommentDto> GetCommentByIdAsync(Guid commentId)
         {
             try
             {
@@ -88,13 +88,13 @@ namespace CryptoNews.Services.Implement.CqsServices
             }
         }
 
-        public IEnumerable<CommentDto> GetCommentsByNewsId(Guid newsId)
+        public IEnumerable<CommentWithInfoDto> GetCommentsByNewsId(Guid newsId)
         {
             try
             {
                 var query = new GetCommentsByNewsIdQuery() { NewsId = newsId };
                 var comments = _queryDispatcher
-                    .Dispatch<GetCommentsByNewsIdQuery, IEnumerable<CommentDto>>(query, new CancellationToken());
+                    .Dispatch<GetCommentsByNewsIdQuery, IEnumerable<CommentWithInfoDto>>(query, new CancellationToken());
                 return comments;
             }
             catch(Exception ex)
@@ -104,9 +104,9 @@ namespace CryptoNews.Services.Implement.CqsServices
             }
         }
 
-        IEnumerable<CommentWithInfoDto> ICommentService.GetCommentsByNewsId(Guid newsId)
+        public CommentDto GetCommentById(Guid id)
         {
-            throw new NotImplementedException();
+            return GetCommentByIdAsync(id).Result;
         }
         #endregion
     }
