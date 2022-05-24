@@ -22,6 +22,7 @@ namespace CryptoNews.Services.Implement
         private readonly BitcoinNewsParserService _bitcoinNewsParser;
         private readonly CryptoNinjasParserService _cryptoNinjasParser;
         private readonly ICommentService _commentService;
+        private readonly IRssSourceService _rssService;
 
         public NewsService(IUnitOfWork unitOfWork,
             OnlinerParserService onlinerParserSvc,
@@ -29,7 +30,8 @@ namespace CryptoNews.Services.Implement
             CointelegraphParserService cointelegraphParserSvc,
             BitcoinNewsParserService bitcoinNewsParserSvc,
             CryptoNinjasParserService cryptoNinjasParserSvc,
-            ICommentService commentSvc)
+            ICommentService commentSvc,
+            IRssSourceService rssSvc)
         {
             _unit = unitOfWork;
             _onlinerParser = onlinerParserSvc;
@@ -38,6 +40,7 @@ namespace CryptoNews.Services.Implement
             _bitcoinNewsParser = bitcoinNewsParserSvc;
             _cryptoNinjasParser = cryptoNinjasParserSvc;
             _commentService = commentSvc;
+            _rssService = rssSvc;
         }
 
         private static News FromDtoToNews(NewsDto nd)
@@ -69,8 +72,9 @@ namespace CryptoNews.Services.Implement
             };
         }
 
-        public async Task<IEnumerable<NewsDto>> AggregateNewsFromRssSourcesAsync(IEnumerable<RssSourceDto> rssSources)
+        public async Task<IEnumerable<NewsDto>> AggregateNewsAsync()
         {
+            var rssSources = await _rssService.GetAllRssSources();
             var resultList = new List<NewsDto>();
 
             foreach (var rssSrc in rssSources)

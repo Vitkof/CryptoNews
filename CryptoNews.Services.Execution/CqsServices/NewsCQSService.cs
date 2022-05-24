@@ -3,6 +3,7 @@ using CryptoNews.Core.IServices;
 using CryptoNews.DAL.CQS;
 using CryptoNews.DAL.CQS.Commands;
 using CryptoNews.DAL.CQS.Queries.News;
+using CryptoNews.DAL.CQS.Queries.Rss;
 using MediatR;
 using Serilog;
 using System;
@@ -20,12 +21,15 @@ namespace CryptoNews.Services.Implement.CqsServices
     {
         private readonly IMediator _mediator;
         private readonly IQueryDispatcher _queryDispatcher;
+        private readonly IRssSourceService _rssService;
 
         public NewsCQSService(IMediator mediator,
-                              IQueryDispatcher dispatcher)
+                              IQueryDispatcher dispatcher,
+                              IRssSourceService rssSvc)
         {
             _mediator = mediator;
             _queryDispatcher = dispatcher;
+            _rssService = rssSvc;
         }
 
 
@@ -68,10 +72,11 @@ namespace CryptoNews.Services.Implement.CqsServices
             }
         }
 
-        public async Task<IEnumerable<NewsDto>> AggregateNewsFromRssSourcesAsync(IEnumerable<RssSourceDto> rssDtos)
+        public async Task<IEnumerable<NewsDto>> AggregateNewsAsync()
         {
             try
             {
+                var rssDtos = await _rssService.GetAllRssSources();
                 var news = new ConcurrentBag<NewsDto>();
                 var urls = await GetAllUrlsFromNews();
                 Parallel.ForEach(rssDtos, (rssSource) =>
@@ -92,7 +97,9 @@ namespace CryptoNews.Services.Implement.CqsServices
                                     RssSourceId = rssSource.Id,
                                     Url = syndicationItem.Id,
                                     Title = syndicationItem.Title.Text,
-                                    Description = syndicationItem.Summary.Text //Parser(?)
+                                    Description = syndicationItem.Summary.Text,
+                                    Body = "Заглушка",
+                                    PubDate = syndicationItem.PublishDate.LocalDateTime
                                 };
                                 news.Add(newsDto);
                             }

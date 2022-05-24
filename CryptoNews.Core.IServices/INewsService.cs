@@ -7,11 +7,12 @@ namespace CryptoNews.Core.IServices
 {
     public interface INewsService
     {
-        Task<IEnumerable<NewsDto>> AggregateNewsFromRssSourcesAsync(IEnumerable<RssSourceDto> rssDtos);
         NewsDto GetNewsById(Guid id);
         Task<IEnumerable<NewsDto>> GetAllNews();
         Task<IEnumerable<NewsDto>> GetNewsBySourceId(Guid? id);
         NewsWithRssSourceNameDto GetNewsWithRssSourceNameById(Guid id);
+
+        Task<IEnumerable<NewsDto>> AggregateNewsAsync();
 
         Task AddNews(NewsDto nd);
         Task AddRangeNews(IEnumerable<NewsDto> newsDto);
