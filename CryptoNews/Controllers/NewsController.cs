@@ -214,8 +214,7 @@ namespace CryptoNews.Controllers
         {
             try
             {
-                var rssSources = await _rssService.GetAllRssSources();
-                var aggregateList = await _newsService.AggregateNewsFromRssSourcesAsync(rssSources);
+                var aggregateList = await _newsService.AggregateNewsAsync();
                 await _newsService.AddRangeNews(aggregateList);
             }
             catch (Exception ex)

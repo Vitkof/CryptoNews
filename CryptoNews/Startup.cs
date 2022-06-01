@@ -23,6 +23,7 @@ using CryptoNews.Policies;
 using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 using CryptoNews.Services.Implement.Mapper;
+using CryptoNews.Services.Implement.NewsRating;
 
 namespace CryptoNews
 {
@@ -87,6 +88,7 @@ namespace CryptoNews
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<INewsRatingService, NewsRatingService>();
 
             var mapperConfig = new MapperConfiguration(mc =>
             mc.AddProfile(new MappingProfile()));

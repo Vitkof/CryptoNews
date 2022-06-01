@@ -1,10 +1,10 @@
 using AutoMapper;
 using CryptoNews.Core.IServices;
 using CryptoNews.DAL.Entities;
-using CryptoNews.DAL.IRepositories;
-using CryptoNews.DAL.Repositories;
 using CryptoNews.Services.Implement;
 using CryptoNews.Services.Implement.Mapper;
+using CryptoNews.Services.Implement.CqsServices;
+using CryptoNews.Services.Implement.NewsRating;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CryptoNews.DAL.CQS.QueryHandlers;
+using CryptoNews.DAL.CQS;
 using System.Reflection;
 using Hangfire;
 using Hangfire.SqlServer;
@@ -52,23 +53,16 @@ namespace CryptoNews.WebAPI
                 .EnableDetailedErrors()
                     );
 
-            services.AddTransient<IRepository<News>, NewsRepository>();
-            services.AddTransient<IRepository<RssSource>, RssRepository>();
-            services.AddTransient<IRepository<User>, UserRepository>();
-            services.AddTransient<IRepository<Role>, RoleRepository>();
-            services.AddTransient<IRepository<Comment>, CommentRepository>();
-            services.AddTransient<OnlinerParserService>();
-            services.AddTransient<LentaParserService>();
-            services.AddTransient<CointelegraphParserService>();
-            services.AddTransient<BitcoinNewsParserService>();
-            services.AddTransient<CryptoNinjasParserService>();
 
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<INewsService, NewsService>();
-            services.AddScoped<IRssSourceService, RssSourceService>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IRoleService, RoleService>();
-            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<INewsRatingService, NewsRatingService>();
+            services.AddScoped<INewsService, NewsCQSService>();
+            services.AddScoped<IRssSourceService, RssSourceCQSService>();
+            services.AddScoped<IUserService, UserCQSService>();
+            services.AddScoped<IRoleService, RoleCQSService>();
+            services.AddScoped<ICommentService, CommentCQSService>();
+            services.AddScoped<IQueryDispatcher, QueryDispatcher>();
+            services.AddScoped<ICommandDispatcher, CommandDispatcher>();
+            
 
             #region Hangfire
             services.AddHangfire(conf => conf
@@ -116,9 +110,12 @@ namespace CryptoNews.WebAPI
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CryptoNews.WebAPI v1"));
 
+            app.UseHangfireServer();
             app.UseHangfireDashboard();
             var newsService = provider.GetService(typeof(INewsService)) as INewsService;
             RecurringJob.AddOrUpdate(()=> newsService.AggregateNewsAsync(), "0,20,40 * * * *");
+            RecurringJob.AddOrUpdate(() => newsService.RateNews(), "0,20,40 * * * *");
+
 
             app.UseHttpsRedirection();
 

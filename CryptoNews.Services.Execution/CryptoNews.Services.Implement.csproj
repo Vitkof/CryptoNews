@@ -18,4 +18,10 @@
     <ProjectReference Include="..\CryptoNews.DAL.Repositories\CryptoNews.DAL.Repositories.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="NewsRating\Afinn\AFINN-ru.json">
+      <SubType>Component</SubType>
+    </None>
+  </ItemGroup>
+
 </Project>

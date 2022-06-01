@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CryptoNews.WebAPI</name>
+    </assembly>
+    <members>
+        <member name="M:CryptoNews.WebAPI.Controllers.AuthController.Refresh(CryptoNews.WebAPI.Requests.RefreshTokenRequest)">
+            <summary>
+            refresh token
+            </summary>
+            <param name="request">object includes refresh token string value</param>
+        </member>
+    </members>
+</doc>

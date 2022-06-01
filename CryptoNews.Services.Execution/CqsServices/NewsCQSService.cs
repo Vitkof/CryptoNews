@@ -22,14 +22,17 @@ namespace CryptoNews.Services.Implement.CqsServices
         private readonly IMediator _mediator;
         private readonly IQueryDispatcher _queryDispatcher;
         private readonly IRssSourceService _rssService;
+        private readonly INewsRatingService _ratingService;
 
         public NewsCQSService(IMediator mediator,
                               IQueryDispatcher dispatcher,
-                              IRssSourceService rssSvc)
+                              IRssSourceService rssSvc,
+                              INewsRatingService ratingSvc)
         {
             _mediator = mediator;
             _queryDispatcher = dispatcher;
             _rssService = rssSvc;
+            _ratingService = ratingSvc;
         }
 
 
@@ -146,6 +149,33 @@ namespace CryptoNews.Services.Implement.CqsServices
         {
             throw new NotImplementedException();
         }
+
+        public async Task<int> UpdateRatingRangeNews(IEnumerable<NewsDto> newsDtos)
+        {
+            try
+            {
+                var count = await _mediator.Send(new UpdateRatingNewsListCommand()
+                { NewsDtos = newsDtos});
+                Log.Information($"Updaded {count} News");
+                return count;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error in Update {ex.Message}");
+                return default;
+            }
+        }
+
+        public async Task RateNews()
+        {
+            var newsWithoutRating = await GetNewsWithoutRating();
+
+            if(newsWithoutRating != null)
+            {
+                var newsWithRating = await _ratingService.Rating(newsWithoutRating);
+                await UpdateRatingRangeNews(newsWithRating);
+            }
+        }
         #endregion
 
         #region Queries
@@ -200,6 +230,19 @@ namespace CryptoNews.Services.Implement.CqsServices
         public NewsWithRssSourceNameDto GetNewsWithRssSourceNameById(Guid id)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<NewsDto>> GetNewsWithoutRating()
+        {
+            try
+            {
+                return await _mediator.Send(new GetNewsWithoutRatingQuery());
+            }
+            catch(Exception ex)
+            {
+                Log.Error($"GetNewsWithoutRating Error: {ex.Message}");
+                return null;
+            }
         }
 
         public async Task<IEnumerable<string>> GetAllUrlsFromNews()

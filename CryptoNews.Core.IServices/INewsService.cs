@@ -11,8 +11,11 @@ namespace CryptoNews.Core.IServices
         Task<IEnumerable<NewsDto>> GetAllNews();
         Task<IEnumerable<NewsDto>> GetNewsBySourceId(Guid? id);
         NewsWithRssSourceNameDto GetNewsWithRssSourceNameById(Guid id);
+        Task<IEnumerable<NewsDto>> GetNewsWithoutRating();
 
         Task<IEnumerable<NewsDto>> AggregateNewsAsync();
+        Task<int> UpdateRatingRangeNews(IEnumerable<NewsDto> newsDtos);
+        Task RateNews();
 
         Task AddNews(NewsDto nd);
         Task AddRangeNews(IEnumerable<NewsDto> newsDto);

@@ -10,6 +10,7 @@ using CryptoNews.DAL.Entities;
 using CryptoNews.DAL.IRepositories;
 using CryptoNews.DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace CryptoNews.Services.Implement
 {
@@ -23,6 +24,7 @@ namespace CryptoNews.Services.Implement
         private readonly CryptoNinjasParserService _cryptoNinjasParser;
         private readonly ICommentService _commentService;
         private readonly IRssSourceService _rssService;
+        private readonly INewsRatingService _ratingService;
 
         public NewsService(IUnitOfWork unitOfWork,
             OnlinerParserService onlinerParserSvc,
@@ -31,7 +33,8 @@ namespace CryptoNews.Services.Implement
             BitcoinNewsParserService bitcoinNewsParserSvc,
             CryptoNinjasParserService cryptoNinjasParserSvc,
             ICommentService commentSvc,
-            IRssSourceService rssSvc)
+            IRssSourceService rssSvc,
+            INewsRatingService ratingSvc)
         {
             _unit = unitOfWork;
             _onlinerParser = onlinerParserSvc;
@@ -41,36 +44,9 @@ namespace CryptoNews.Services.Implement
             _cryptoNinjasParser = cryptoNinjasParserSvc;
             _commentService = commentSvc;
             _rssService = rssSvc;
+            _ratingService = ratingSvc;
         }
 
-        private static News FromDtoToNews(NewsDto nd)
-        {
-            return new News()
-            {
-                Id = nd.Id,
-                Title = nd.Title,
-                Description = nd.Description,
-                Body = nd.Body,
-                PubDate = nd.PubDate,
-                Rating = nd.Rating,
-                Url = nd.Url,
-                RssSourceId = nd.RssSourceId,               
-            };
-        }
-        private static NewsDto FromNewsToDto(News n)
-        {
-            return new NewsDto()
-            {
-                Id = n.Id,
-                Title = n.Title,
-                Description = n.Description,
-                Body = n.Body,
-                PubDate = n.PubDate,
-                Rating = n.Rating,
-                Url = n.Url,
-                RssSourceId = n.RssSourceId,
-            };
-        }
 
         public async Task<IEnumerable<NewsDto>> AggregateNewsAsync()
         {
@@ -208,6 +184,47 @@ namespace CryptoNews.Services.Implement
             return _unit.News.ReadAll().Any(e => e.Id == id);
         }
 
+        public async Task<int> UpdateRatingRangeNews(IEnumerable<NewsDto> newsDto)
+        {
+            try
+            {
+                foreach (var dto in newsDto)
+                {
+                    var news = GetNewsById(dto.Id);
+                    news.Rating = dto.Rating;
+                }
+
+                var save = await _unit.SaveChangesAsync();
+                return save;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error in UpdateRatingNews: {ex.Message}");
+                return 0;
+            }
+        }
+
+        public async Task RateNews()
+        {
+            var getNewsWithoutRating = await GetNewsWithoutRating();
+            if (getNewsWithoutRating != null)
+            {
+                var newsWithRating = await _ratingService.Rating(getNewsWithoutRating);
+
+                await UpdateRatingRangeNews(newsWithRating);
+            }
+        }
+
+        public async Task<IEnumerable<NewsDto>> GetNewsWithoutRating()
+        {
+            var getNewsWithoutRating = await _unit.News
+                .ReadAll()
+                .Where(news => news.Rating == 0)
+                .Take(30)
+                .Select(news => FromNewsToDto(news))
+                .ToListAsync();
+            return getNewsWithoutRating;
+        }
 
         public NewsDto GetNewsById(Guid id)
         {
@@ -262,6 +279,7 @@ namespace CryptoNews.Services.Implement
             return newsDtos;
         }
 
+        #region private
         private static void BodyDescFillerAsync(IEnumerable<NewsDto> dtos, IWebPageParser parser)
         {
             foreach(var dto in dtos)
@@ -270,5 +288,34 @@ namespace CryptoNews.Services.Implement
                 dto.Description = parser.CleanDescription(dto.Description);
             }
         }
+        private static News FromDtoToNews(NewsDto nd)
+        {
+            return new News()
+            {
+                Id = nd.Id,
+                Title = nd.Title,
+                Description = nd.Description,
+                Body = nd.Body,
+                PubDate = nd.PubDate,
+                Rating = nd.Rating,
+                Url = nd.Url,
+                RssSourceId = nd.RssSourceId,
+            };
+        }
+        private static NewsDto FromNewsToDto(News n)
+        {
+            return new NewsDto()
+            {
+                Id = n.Id,
+                Title = n.Title,
+                Description = n.Description,
+                Body = n.Body,
+                PubDate = n.PubDate,
+                Rating = n.Rating,
+                Url = n.Url,
+                RssSourceId = n.RssSourceId,
+            };
+        }
+        #endregion
     }
 }
