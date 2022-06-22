@@ -13,6 +13,6 @@ namespace CryptoNews.Core.IServices
         Task<bool> IsRefreshTokenIsValidAsync(string token, Guid userId);
         Task<RefreshTokenDto> GenerateRefreshTokenAsync(ClaimsPrincipal subject, Guid userId);
         Task<RefreshTokenDto> UpdateRefreshTokenAsync(string handle, RefreshTokenDto refreshToken, Guid userId);
-        
+        Task RevokeRefreshTokenAsync(Guid id);
     }
 }

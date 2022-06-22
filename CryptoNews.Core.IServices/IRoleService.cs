@@ -9,6 +9,7 @@ namespace CryptoNews.Core.IServices
     {
         RoleDto GetRoleByUserId(Guid userId);
         string GetRoleNameByEmail(string email);
+        Guid GetIdByName(string name);
         IEnumerable<RoleDto> GetRoles();
         Task AddRoleToUser(Guid userId, RoleDto rd);
     }

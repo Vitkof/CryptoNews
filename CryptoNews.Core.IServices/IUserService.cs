@@ -13,6 +13,7 @@ namespace CryptoNews.Core.IServices
         UserDto GetUserByEmail(string email);
 
         Task<string> GetEmailByRefreshToken(string token);
+        Task<UserDto> GetUserByRefreshToken(string token);
         Task<bool> CheckAuthIsValid(UserDto ud);
 
         Task<bool> AddUser(UserDto ud);

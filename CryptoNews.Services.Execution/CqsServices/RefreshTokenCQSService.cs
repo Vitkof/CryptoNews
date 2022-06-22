@@ -3,10 +3,14 @@ using CryptoNews.Core.IServices;
 using CryptoNews.DAL.CQS.Commands;
 using CryptoNews.DAL.CQS.Queries.RefreshToken;
 using MediatR;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace CryptoNews.Services.Implement.CqsServices
@@ -14,10 +18,13 @@ namespace CryptoNews.Services.Implement.CqsServices
     public class RefreshTokenCQSService : IRefreshTokenService
     {
         private readonly IMediator _mediator;
+        private readonly IConfiguration _configuration;
 
-        public RefreshTokenCQSService(IMediator mediator)
+        public RefreshTokenCQSService(IMediator mediator,
+                                      IConfiguration config)
         {
             _mediator = mediator;
+            _configuration = config;
         }
 
 
@@ -34,7 +41,7 @@ namespace CryptoNews.Services.Implement.CqsServices
                     UserId = userId,
                     Token = rndNumber.ToString(),
                     CreationTime = DateTime.Now.ToLocalTime(),
-                    ElapsesUtc = DateTime.Now.ToLocalTime().AddHours(1)
+                    ElapsesUtc = DateTime.Now.ToLocalTime().AddDays(double.Parse(_configuration["RefreshToken:ExpiresDays"]))
                 };
             }
             
@@ -66,7 +73,7 @@ namespace CryptoNews.Services.Implement.CqsServices
             /////////////////////////////////////////////
             // check if refresh token has expired
             /////////////////////////////////////////////
-            if (rt.ElapsesUtc >= DateTime.Now)
+            if (rt.ElapsesUtc <= DateTime.Now)
             {
                 Log.Warning("Refresh token has expired.");
                 return false;
@@ -87,6 +94,19 @@ namespace CryptoNews.Services.Implement.CqsServices
         public Task<RefreshTokenDto> UpdateRefreshTokenAsync(string handle, RefreshTokenDto refreshToken, Guid userId)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task RevokeRefreshTokenAsync(Guid id)
+        {
+            try
+            {
+                await _mediator.Send(new RevokeRefreshTokenCommand()
+                { TokenId = id });
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Revoke RefreshToken Exception: {ex.Message}");
+            }
         }
     }
 }

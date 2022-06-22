@@ -106,6 +106,40 @@ namespace CryptoNews.Services.Implement.CqsServices
             }
         }
 
+        public async Task<string> GetEmailByRefreshToken(string token)
+        {
+            try
+            {
+                var query = new GetEmailByRefreshTokenQuery()
+                { Token = token };
+                var email = await _queryDispatcher
+                    .HandleAsync<GetEmailByRefreshTokenQuery, string>(query, new CancellationToken());
+                return email;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error GetEmailByRefreshToken: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<UserDto> GetUserByRefreshToken(string token)
+        {
+            try
+            {
+                var query = new GetUserByRefreshTokenQuery()
+                { Token = token };
+                var user = await _queryDispatcher
+                    .HandleAsync<GetUserByRefreshTokenQuery, UserDto>(query, new CancellationToken());
+                return user;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error GetUserByRefreshToken: {ex.Message}");
+                return null;
+            }
+        }
+
         public async Task<int> EditUser(UserDto ud)
         {
             try
@@ -135,23 +169,6 @@ namespace CryptoNews.Services.Implement.CqsServices
             {
                 Log.Error($"Error DeleteUser: {ex.Message} {ud.Id}");
                 return 0;
-            }
-        }
-
-        public async Task<string> GetEmailByRefreshToken(string token)
-        {
-            try
-            {
-                var query = new GetEmailByRefreshTokenQuery()
-                { Token = token };
-                var email = await _queryDispatcher
-                    .HandleAsync<GetEmailByRefreshTokenQuery, string>(query, new CancellationToken());
-                return email;
-            }
-            catch(Exception ex)
-            {
-                Log.Error($"Error GetEmailByRefreshToken: {ex.Message}");
-                return null;
             }
         }
 

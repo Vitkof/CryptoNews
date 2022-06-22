@@ -26,6 +26,10 @@ using System.Reflection;
 using Hangfire;
 using Hangfire.SqlServer;
 using System.IO;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using CryptoNews.WebAPI.Auth;
 
 namespace CryptoNews.WebAPI
 {
@@ -54,6 +58,7 @@ namespace CryptoNews.WebAPI
                     );
 
 
+            services.AddScoped<IRefreshTokenService, RefreshTokenCQSService>();
             services.AddScoped<INewsRatingService, NewsRatingService>();
             services.AddScoped<INewsService, NewsCQSService>();
             services.AddScoped<IRssSourceService, RssSourceCQSService>();
@@ -62,6 +67,7 @@ namespace CryptoNews.WebAPI
             services.AddScoped<ICommentService, CommentCQSService>();
             services.AddScoped<IQueryDispatcher, QueryDispatcher>();
             services.AddScoped<ICommandDispatcher, CommandDispatcher>();
+            services.AddScoped<IJwtAuthManager, JwtAuthManager>();
             
 
             #region Hangfire
@@ -86,6 +92,28 @@ namespace CryptoNews.WebAPI
             mc.AddProfile(new MappingProfile()));
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
+            #endregion
+
+            #region Authentication
+            services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddJwtBearer(opt =>
+            {
+                opt.Audience = Configuration["Jwt:Audience"];
+                opt.RequireHttpsMetadata = false;
+                opt.SaveToken = true;
+                opt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+
+            });
             #endregion
 
             services.AddMediatR(typeof(GetRssByIdQueryHandler).GetTypeInfo().Assembly);

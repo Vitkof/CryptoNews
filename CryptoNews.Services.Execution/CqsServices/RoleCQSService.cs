@@ -78,6 +78,23 @@ namespace CryptoNews.Services.Implement.CqsServices
             }
         }
 
+        public Guid GetIdByName(string name)
+        {
+            try
+            {
+                var query = new GetIdByNameQuery()
+                { Name = name };
+                var roleId = _queryDispatcher
+                    .Dispatch<GetIdByNameQuery, Guid>(query, new CancellationToken());
+                return roleId;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"GetRoleNameByEmail Error: {ex.Message}");
+                throw;
+            }
+        }
+
         public IEnumerable<RoleDto> GetRoles()
         {
             try

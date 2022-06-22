@@ -39,7 +39,8 @@ namespace CryptoNews.DAL.Entities
         public Guid RoleId { get; set; }
         public Role Role { get; set; }
 
-        public virtual ICollection<Comment> CommentsCollection { get; set; } 
+        public virtual ICollection<Comment> CommentsCollection { get; set; }
+        public virtual ICollection<RefreshToken> RefreshTokensCollection { get; set; }
     }
 
 

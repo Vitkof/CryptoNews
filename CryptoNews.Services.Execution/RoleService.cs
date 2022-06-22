@@ -67,6 +67,11 @@ namespace CryptoNews.Services.Implement
             return string.Empty;
         }
 
+        public Guid GetIdByName(string name)
+        {
+            return _unit.Roles.Read(r => r.Name.Equals(name)).Id;
+        }
+
         public async Task<int> DeleteRole(RoleDto rd)
         {
             _unit.Roles.Delete(rd.Id);
@@ -83,5 +88,7 @@ namespace CryptoNews.Services.Implement
             _unit.Roles.Update(role);
             return await _unit.SaveChangesAsync();
         }
+
+        
     }
 }

@@ -5,6 +5,7 @@ namespace CryptoNews.WebAPI.Auth
 {
     public interface IJwtAuthManager
     {
-        Task<JwtAuthResult> GenerateTokens(string email, Claim[] claims);
+        Task<JwtAuthResult> GetJwt(string email);
+        ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
     }
 }

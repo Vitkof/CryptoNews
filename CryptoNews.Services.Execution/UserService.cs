@@ -71,7 +71,6 @@ namespace CryptoNews.Services.Implement
             return _mapper.Map<UserDto>(user);
         }
 
-
         public async Task<int> DeleteUser(UserDto ud)
         {
             _unit.Users.Delete(ud.Id);
@@ -107,6 +106,11 @@ namespace CryptoNews.Services.Implement
         }
 
         public Task<bool> CheckAuthIsValid(UserDto ud)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UserDto> GetUserByRefreshToken(string token)
         {
             throw new NotImplementedException();
         }
