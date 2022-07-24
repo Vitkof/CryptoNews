@@ -2,54 +2,44 @@
 using CryptoNews.Core.IServices;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using CryptoNews.DAL.Repositories;
-using CryptoNews.DAL.Entities;
-using CryptoNews.DAL.IRepositories;
-using Microsoft.EntityFrameworkCore;
-using AutoMapper;
 using CryptoNews.DAL.CQS.Queries.Rss;
 using CryptoNews.DAL.CQS;
-using CryptoNews.DAL.CQS.QueryHandlers.Rss;
 using System.Threading;
 
 namespace CryptoNews.Services.Implement.CqsServices
 {
     public class RssSourceCQSService : IRssSourceService
     {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly QueryDispatcher _dispatcher;
+        private readonly IQueryDispatcher _queryDispatcher;
 
-        public RssSourceCQSService(IServiceProvider svc)
+        public RssSourceCQSService(IQueryDispatcher queryDispatcher)
         {
-            _serviceProvider = svc;
-            _dispatcher = new QueryDispatcher(_serviceProvider);
+            _queryDispatcher = queryDispatcher;
         }
 
         public async Task<IEnumerable<RssSourceDto>> GetAllRssSources()
         {
             var query = new GetAllRssQuery();
             return
-                await _dispatcher
-                .HandleAsync<GetAllRssQuery, IEnumerable<RssSourceDto>>(query);
+                await _queryDispatcher
+                .HandleAsync<GetAllRssQuery, IEnumerable<RssSourceDto>>(query, new CancellationToken());
         }
 
         public RssSourceDto GetRssSourceById(Guid id)
         {
             var query = new GetRssByIdQuery(id);
             return
-                _dispatcher
-                .Dispatch<GetRssByIdQuery, RssSourceDto>(query);
+                _queryDispatcher
+                .Dispatch<GetRssByIdQuery, RssSourceDto>(query, new CancellationToken());
         }
 
         public async Task<RssSourceDto> GetRssSourceByNameUrl(string name, string url)
         {
             var query = new GetRssByNameUrlQuery(name, url);
             return
-                await _dispatcher
-                .HandleAsync<GetRssByNameUrlQuery, RssSourceDto>(query);
+                await _queryDispatcher
+                .HandleAsync<GetRssByNameUrlQuery, RssSourceDto>(query, new CancellationToken());
         }
 
 

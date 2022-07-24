@@ -1,7 +1,6 @@
 using AutoMapper;
 using CryptoNews.Core.IServices;
 using CryptoNews.DAL.Entities;
-using CryptoNews.Services.Implement;
 using CryptoNews.Services.Implement.Mapper;
 using CryptoNews.Services.Implement.CqsServices;
 using CryptoNews.Services.Implement.NewsRating;
@@ -17,10 +16,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using MediatR;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CryptoNews.DAL.CQS.QueryHandlers;
+using CryptoNews.DAL.CQS.CommandHandlers;
 using CryptoNews.DAL.CQS;
 using System.Reflection;
 using Hangfire;
@@ -30,6 +27,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using CryptoNews.WebAPI.Auth;
+
 
 namespace CryptoNews.WebAPI
 {
@@ -58,6 +56,9 @@ namespace CryptoNews.WebAPI
                     );
 
 
+            services.AddCommandQueryHandlers(typeof(ICommandHandler<>));
+            services.AddCommandQueryHandlers(typeof(IQueryHandler<,>));
+
             services.AddScoped<IRefreshTokenService, RefreshTokenCQSService>();
             services.AddScoped<INewsRatingService, NewsRatingService>();
             services.AddScoped<INewsService, NewsCQSService>();
@@ -68,7 +69,7 @@ namespace CryptoNews.WebAPI
             services.AddScoped<IQueryDispatcher, QueryDispatcher>();
             services.AddScoped<ICommandDispatcher, CommandDispatcher>();
             services.AddScoped<IJwtAuthManager, JwtAuthManager>();
-            
+
 
             #region Hangfire
             services.AddHangfire(conf => conf
@@ -116,8 +117,17 @@ namespace CryptoNews.WebAPI
             });
             #endregion
 
-            services.AddMediatR(typeof(GetRssByIdQueryHandler).GetTypeInfo().Assembly);
-            services.AddControllers();
+            #region CORS
+            services.AddCors(options =>
+            {
+                options.AddPolicy("Default",
+                    builder => { 
+                        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); 
+                    });
+            });
+            #endregion
+
+            #region Swagger
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CryptoNews.WebAPI", Version = "v1" });
@@ -125,6 +135,11 @@ namespace CryptoNews.WebAPI
                 var xmlPath = Path.Combine(xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+            #endregion
+
+            services.AddMediatR(typeof(GetRssByIdQueryHandler).GetTypeInfo().Assembly);
+            services.AddControllers();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -144,10 +159,10 @@ namespace CryptoNews.WebAPI
             RecurringJob.AddOrUpdate(()=> newsService.AggregateNewsAsync(), "0,20,40 * * * *");
             RecurringJob.AddOrUpdate(() => newsService.RateNews(), "0,20,40 * * * *");
 
-
+            
             app.UseHttpsRedirection();
-
             app.UseRouting();
+            app.UseCors("Default");
 
             app.UseAuthentication();
             app.UseAuthorization();

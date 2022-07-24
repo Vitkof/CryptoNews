@@ -5,13 +5,6 @@ using System.Threading;
 
 namespace CryptoNews.DAL.CQS
 {
-    public interface ICommandDispatcher
-    {
-        void Handle<TCommand>(TCommand command, CancellationToken token)
-            where TCommand : ICommand;
-    }
-
-
     public class CommandDispatcher : ICommandDispatcher
     {
         private readonly IServiceProvider _serviceProvider;
@@ -29,8 +22,7 @@ namespace CryptoNews.DAL.CQS
             if (command == null)
                 throw new ArgumentNullException(nameof(command));
 
-            var handlerType = typeof(ICommandHandler<>)
-                .MakeGenericType(command.GetType());
+            var handlerType = typeof(ICommandHandler<TCmd>);
 
             try
             {

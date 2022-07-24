@@ -21,14 +21,14 @@ namespace CryptoNews.DAL.CQS
         {
             var handler = GetHandler<IQueryHandler<TQ, TR>, TQ>(query);
 
-            return await handler.Handle(query, token);
+            return await handler.Handle((dynamic)query, token);
         }
 
         public TR Dispatch<TQ, TR>(TQ query, CancellationToken token = default) where TQ : IQuery<TR>
         {
             var handler = GetHandler<IQueryHandler<TQ, TR>, TQ>(query);
 
-            return handler.Handle(query,token).Result;
+            return handler.Handle((dynamic)query, token).Result;
         }
 
         #region private
@@ -37,8 +37,8 @@ namespace CryptoNews.DAL.CQS
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
 
-            var handlerType = typeof(IQueryHandler<,>)
-                .MakeGenericType(query.GetType(), typeof(THandler));
+            var handlerType = typeof(THandler);
+
             try
             {
                 dynamic handler = _serviceProvider.GetService(handlerType);

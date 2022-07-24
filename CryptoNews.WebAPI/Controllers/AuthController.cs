@@ -68,6 +68,7 @@ namespace CryptoNews.WebAPI.Controllers
 
         [HttpPost]
         [Route("login")]
+        [ProducesResponseType(200, Type = typeof(JwtAuthResult))]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             if (request is null)

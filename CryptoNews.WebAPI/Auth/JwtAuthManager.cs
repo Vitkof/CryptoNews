@@ -97,7 +97,9 @@ namespace CryptoNews.WebAPI.Auth
             return new JwtAuthResult()
             {
                 AccessToken = accessToken,
-                RefreshToken = refreshToken.Token
+                RefreshToken = refreshToken.Token,
+                Email = email,
+                UserId = userId
             };
         }
     }

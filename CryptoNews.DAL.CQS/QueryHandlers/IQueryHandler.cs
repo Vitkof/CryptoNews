@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace CryptoNews.DAL.CQS.QueryHandlers
 {
-    public interface IQueryHandler<TQ, TR> 
+    public interface IQueryHandler<in TQ, TR> 
         where TQ : IQuery<TR>
     {
         Task<TR> Handle(TQ query, CancellationToken token);

@@ -16,11 +16,11 @@ namespace CryptoNews.Services.Implement.CqsServices
         private readonly IQueryDispatcher _queryDispatcher;
         private readonly ICommandDispatcher _commandDispatcher;
 
-        public RoleCQSService(IQueryDispatcher dispatcher,
-                              ICommandDispatcher com)
+        public RoleCQSService(IQueryDispatcher queryDispatcher,
+                              ICommandDispatcher commandDispatcher)
         {
-            _queryDispatcher = dispatcher;
-            _commandDispatcher = com;
+            _queryDispatcher = queryDispatcher;
+            _commandDispatcher = commandDispatcher;
         }
 
         public async Task AddRoleToUser(Guid userId, RoleDto role)
