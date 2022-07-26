@@ -176,16 +176,16 @@ namespace CryptoNews.Services.Implement.CqsServices
         {
             try
             {
-                var user = await _mediator.Send(new CheckAuthenticationQuery()
+                var userValid = await _mediator.Send(new CheckAuthenticationQuery()
                 {
                     Email = ud.Email,
                     PasswordHash = ud.PasswordHash
                 });
-                return true;
+                return userValid;
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Register was not successful");
+                Log.Error(ex, "CheckAuthentication was not successful");
                 return false;
             }
         }

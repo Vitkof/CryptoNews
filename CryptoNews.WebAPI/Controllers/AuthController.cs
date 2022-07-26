@@ -21,13 +21,13 @@ namespace CryptoNews.WebAPI.Controllers
         private readonly IJwtAuthManager _jwtAuthManager;
 
 
-        public AuthController(IUserService userSvc,
+        public AuthController(IUserService userService,
                               IRoleService roleService,
                               IJwtAuthManager authManager)
         {
-            _userService = userSvc;
-            _roleService = roleService;
-            _jwtAuthManager = authManager;
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _roleService = roleService ?? throw new ArgumentNullException(nameof(roleService));
+            _jwtAuthManager = authManager ?? throw new ArgumentNullException(nameof(authManager));
         }
 
         [HttpPost]

@@ -1,0 +1,9 @@
+<div *ngIf="specifiedNews">
+  <h2>{{specifiedNews.title}}. Details</h2>
+  <div>
+    <label for="name">specifiedNews name: </label>
+    <input id="name" [(ngModel)]="specifiedNews.name" placeholder="Name"/>
+  </div>
+  <p>{{specifiedNews.body}}</p>
+  <button (click)="goBack()">Back</button>
+</div>

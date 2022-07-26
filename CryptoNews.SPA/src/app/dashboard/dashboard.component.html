@@ -1,0 +1,25 @@
+<h2>Top Rated News</h2>
+
+<div *ngFor="let news of newsCollection">
+  <h3>{{news.title}}</h3>
+  <div>
+    <span>
+      <b>id:</b>
+    </span>
+    {{news.id}}
+  </div>
+
+  <div>
+    <span>
+      <b>summary:</b>
+    </span>
+    <div innerHTML="{{news.description}}"></div>
+  </div>
+  <div>
+    <span>
+      <b>rating:</b>
+    </span>
+    <div innerHTML="{{news.rating}}"></div>
+  </div>
+  <hr>
+</div>

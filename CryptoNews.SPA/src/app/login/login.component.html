@@ -1,0 +1,30 @@
+<div class="login">
+    <h2 class="login-header">Log in</h2>
+    <form [formGroup]="loginForm" class="login-container" (ngSubmit)="onSubmit()">
+        <div>
+            <p [ngClass]="{ 'has-error': submitted && formControls.email.errors }">
+                <input type="email" placeholder="Email" formControlName="email" mask maskchar value class="styles_input__v1 styles_isInvalid__v1">
+            </p>
+
+            <div *ngIf="submitted && formControls.email.errors" class="help-block">
+                <div *ngIf="formControls.email.errors.required">Email is required</div>
+            </div>
+        </div>
+        <div>
+            <p [ngClass]="{ 'has-error': submitted && formControls.password.errors }">
+                <input type="password" placeholder="Password" formControlName="password">
+            </p>
+
+            <div *ngIf="submitted && formControls.password.errors" class="help-block">
+                <div *ngIf="formControls.password.errors.required">Password is required</div>
+            </div>
+        </div>
+        <div class="styles_form__submit_login" data-name="login_submit">
+            <button type="submit" class="styles_button__lgn" [disabled]="loginForm.invalid">Login</button>
+        </div>
+        <div class="errors" *ngIf="error">
+            <p>{{error}}</p>
+        </div>
+
+    </form>
+</div>

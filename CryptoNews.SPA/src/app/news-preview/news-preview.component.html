@@ -1,0 +1,9 @@
+<div *ngIf="news">
+  <div class="b-title m-1x1 m-info m-blue">
+    <h3>{{ news.name | uppercase }}</h3>
+    <p>{{ news.summary }}</p>
+    <p>{{ news.rating }}</p>
+    <button (click)="navigate(news)">Click</button>
+    <a routerLink="/news/{{news.id}}">Details to {{ news.id }}</a>
+  </div>
+</div>

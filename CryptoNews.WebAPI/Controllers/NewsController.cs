@@ -43,11 +43,16 @@ namespace CryptoNews.WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Get news from database
+        /// </summary>
+        /// <returns>News from DB</returns>
         [HttpGet]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<NewsDto>))]
         public async Task<IActionResult> Get()
         {
-            var @newsColl = await _newsService.GetNewsBySourceId(null);
-            return Ok(@newsColl);
+            var @news = await _newsService.GetAllNews();
+            return Ok(@news.Take(5).Where(n => n.Rating != 0));
         }
 
         [HttpPut]

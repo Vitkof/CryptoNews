@@ -1,0 +1,8 @@
+<ul class="news-list">
+    <div *ngFor="let news of newsCollection" [class.selected]="news === selectedNews" (click)=select(news)>
+        <app-news-preview [news]="news"></app-news-preview>
+        <hr>
+    </div>
+</ul>
+
+<app-news-detail [specifiedNews]="selectedNews"></app-news-detail>

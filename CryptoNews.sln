@@ -32,14 +32,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CryptoNews.WebAPI", "Crypto
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CryptoNews.DAL.CQS", "CryptoNews.DAL.CQS\CryptoNews.DAL.CQS.csproj", "{7BE4AD3C-2FDB-4620-88AE-7A3ACBE38487}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CryptoNews-SPA", "CryptoNews-SPA", "{152D5C30-30BF-440F-AFA8-F9AC365A93D8}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CryptoNews.DAL.CQS.Test", "CryptoNews.DAL.CQS.Test\CryptoNews.DAL.CQS.Test.csproj", "{3E22D43B-5A26-4E7F-B805-17B28835DBAD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{413AECA8-85F6-403D-8D4C-3E02C15711AF}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CryptoNews.SPA", "CryptoNews.SPA", "{01E1902F-213F-497C-92B0-74D4AB8C898E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
